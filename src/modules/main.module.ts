@@ -7,6 +7,8 @@ import { UploadModule } from './upload/upload.module';
 import { SkillModule } from './skill/skill.module';
 import { SubSkillModule } from './sub-skill/sub-skill.module';
 import { JobModule } from './job/job.module';
+import { SkillModule } from './skill/skill.module';
+import { SubSkillModule } from './sub-skill/sub-skill.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { JobModule } from './job/job.module';
     SkillModule,
     SubSkillModule,
     JobModule,
+    SkillModule,
+    SubSkillModule,
   ],
   controllers: [],
   providers: [],

@@ -35,6 +35,12 @@
       ],
       "@app/payment/*": [
         "libs/payment/src/*"
+      ],
+      "@app/upload": [
+        "libs/upload/src"
+      ],
+      "@app/upload/*": [
+        "libs/upload/src/*"
       ]
     }
   }

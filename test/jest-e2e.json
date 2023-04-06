@@ -14,6 +14,8 @@
     "@app/typeorm/(.*)": "<rootDir>/../libs/typeorm/src/$1",
     "@app/typeorm": "<rootDir>/../libs/typeorm/src",
     "@app/payment/(.*)": "<rootDir>/../libs/payment/src/$1",
-    "@app/payment": "<rootDir>/../libs/payment/src"
+    "@app/payment": "<rootDir>/../libs/payment/src",
+    "@app/upload-file/(.*)": "<rootDir>/../libs/upload-file/src/$1",
+    "@app/upload-file": "<rootDir>/../libs/upload-file/src"
   }
 }

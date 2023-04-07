@@ -34,28 +34,28 @@ export class UserEntity extends BaseEntity {
   @Column({ default: ROLE.FREELANCE })
   role: string;
 
-  @Column()
+  @Column({ nullable: true })
   stripeCustomerId: string;
 
-  @Column()
+  @Column({ nullable: true })
   address: string;
 
-  @Column()
+  @Column({ nullable: true })
   city: string;
 
-  @Column()
+  @Column({ nullable: true })
   country: string;
 
-  @Column()
+  @Column({ nullable: true })
   line1: string;
 
-  @Column()
+  @Column({ nullable: true })
   line2: string;
 
-  @Column()
+  @Column({ nullable: true })
   phone: string;
 
-  @Column()
+  @Column({ nullable: true })
   state: string;
 
   @OneToMany(() => PaymentMethodEntity, (paymentMethod) => paymentMethod.user)

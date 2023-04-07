@@ -37,18 +37,44 @@ export class PaymentMethodService {
       token: input.token,
     });
 
-    const paymentMethod = new PaymentMethodEntity();
-    paymentMethod.paymentMethodId = stripePaymentMethod.id;
-    paymentMethod.user.id = user.id;
-    paymentMethod.brand = stripePaymentMethod.card.brand;
-    paymentMethod.last4 = stripePaymentMethod.card.last4;
-    paymentMethod.isDefault = input.isDefault;
+    if (input.isDefault) {
+      await Promise.all([
+        this.stripeService.defaultPaymentMethodToCustomer({
+          customerId: stripeCustomerId,
+          paymentMethodId: stripePaymentMethod.id,
+        }),
+        this.paymentMethodRepository.update(
+          {
+            user: {
+              id: user.id,
+            },
+          },
+          {
+            isDefault: false,
+          },
+        ),
+      ]);
+    }
 
-    return this.paymentMethodRepository.save(paymentMethod);
+    return this.paymentMethodRepository.save({
+      last4: stripePaymentMethod.card.last4,
+      paymentMethodId: stripePaymentMethod.id,
+      brand: stripePaymentMethod.card.brand,
+      isDefault: input.isDefault,
+      user: {
+        id: user.id,
+      },
+    });
   }
 
-  findAll() {
-    return `This action returns all paymentMethod`;
+  findAll(userId: string) {
+    return this.paymentMethodRepository.find({
+      where: {
+        user: {
+          id: userId,
+        },
+      },
+    });
   }
 
   findOne(id: number) {

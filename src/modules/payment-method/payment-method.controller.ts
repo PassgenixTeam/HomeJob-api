@@ -17,8 +17,9 @@ export class PaymentMethodController {
   }
 
   @Get()
-  findAll() {
-    return this.paymentMethodService.findAll();
+  @Auth()
+  findAll(@AuthUser('id') userId: string) {
+    return this.paymentMethodService.findAll(userId);
   }
 
   @Get(':id')

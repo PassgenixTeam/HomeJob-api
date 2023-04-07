@@ -6,11 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { SubSkillService } from './sub-skill.service';
 import { CreateSubSkillDto } from './dto/create-sub-skill.dto';
 import { UpdateSubSkillDto } from './dto/update-sub-skill.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { FilterSubSkillDto } from './dto/filter-sub-skill.dto';
 
 @ApiTags('sub-skill')
 @Controller('sub-skill')
@@ -18,13 +20,13 @@ export class SubSkillController {
   constructor(private readonly subSkillService: SubSkillService) {}
 
   @Post()
-  create(@Body() createSubSkillDto: CreateSubSkillDto) {
-    return this.subSkillService.create(createSubSkillDto);
+  create(@Body() input: CreateSubSkillDto) {
+    return this.subSkillService.create(input);
   }
 
   @Get()
-  findAll() {
-    return this.subSkillService.findAll();
+  findAll(@Query() filter: FilterSubSkillDto) {
+    return this.subSkillService.findAll(filter);
   }
 
   @Get(':id')

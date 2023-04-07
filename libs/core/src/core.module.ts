@@ -29,11 +29,11 @@ import { PassportModule } from '@nestjs/passport';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '../../../', 'public').replace('/dist', ''),
     }),
-    TypeOrmModule.forFeature([SessionEntity]),
     //
     TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
     // MongooseModule.forRoot(appConfig.database.MONGO_DB.DB_URI),
     //
+    TypeOrmModule.forFeature([SessionEntity]),
     PassportModule,
     JwtModule.registerAsync({
       useFactory: () => ({

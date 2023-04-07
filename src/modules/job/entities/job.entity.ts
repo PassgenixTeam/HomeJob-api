@@ -1,5 +1,8 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, DeepPartial, Entity, OneToMany } from 'typeorm';
 import { BaseEntity } from '@app/common';
+import { MappingJobSkillEntity } from '../../mapping-job-skill/entities/mapping-job-skill.entity';
+import { Exclude, Expose } from 'class-transformer';
+import { SubSkillEntity } from '../../sub-skill/entities/sub-skill.entity';
 
 @Entity({ name: 'jobs' })
 export class JobEntity extends BaseEntity {
@@ -35,4 +38,13 @@ export class JobEntity extends BaseEntity {
 
   @Column()
   status: string;
+
+  @OneToMany(
+    () => MappingJobSkillEntity,
+    (mappingJobSkill) => mappingJobSkill.job,
+  )
+  mappingJobSkill: MappingJobSkillEntity[];
+
+  @Exclude()
+  skills?: DeepPartial<SubSkillEntity[]>;
 }

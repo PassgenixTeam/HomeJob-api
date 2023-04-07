@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 import { SubSkillEntity } from '../../sub-skill/entities/sub-skill.entity';
 import { BaseEntity } from '@app/common';
 
@@ -8,6 +8,5 @@ export class SkillEntity extends BaseEntity {
   name: string;
 
   @OneToMany(() => SubSkillEntity, (subSkill) => subSkill.skill)
-  @JoinColumn()
   subSkills: SubSkillEntity[];
 }

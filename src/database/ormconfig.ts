@@ -1,4 +1,4 @@
-import { DataSource } from 'typeorm';
+import { DataSource, createConnection } from 'typeorm';
 import { join } from 'path';
 import * as dotenv from 'dotenv';
 import { SnakeNamingStrategy } from '@app/core';

@@ -33,4 +33,7 @@ export class CreateJobDto {
 
   @ApiProperty({ type: String, description: 'Status' })
   status: string;
+
+  @ApiProperty({ type: [String] })
+  skills: string[];
 }

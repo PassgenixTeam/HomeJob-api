@@ -15,11 +15,8 @@ import { typeOrmAsyncConfig } from './config/typeorm.config';
 import { appConfig } from './config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { MongooseModule } from '@nestjs/mongoose';
-// import { RedisService } from './cache';
 import { SessionService } from '../../../src/modules/session/session.service';
 import { SessionEntity } from '../../../src/modules/session/entities/session.entity';
-import { RedisService } from './cache/redis.service';
 import { CacheModule } from './cache/cache.module';
 import { PassportModule } from '@nestjs/passport';
 

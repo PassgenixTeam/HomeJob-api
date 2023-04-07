@@ -15,7 +15,7 @@ import {
   AddPaymentMethodDto,
   CreateCustomerPaymentDto,
   CreatePaymentIntentDto,
-  CreatePaymentMethodDto,
+  CreatePaymentMethodsDto,
 } from './dto';
 import { CapturePaymentIntentDto } from './dto/capture-payment-intent.dto';
 import { ConfirmPaymentIntentDto } from './dto/confirm-payment-intent.dto';
@@ -68,7 +68,7 @@ export class StripeController {
   }
 
   @Post('create-payment-method')
-  createPaymentMethod(@Body() paymentMethod: CreatePaymentMethodDto) {
+  createPaymentMethod(@Body() paymentMethod: CreatePaymentMethodsDto) {
     return this.stripeService.createPaymentMethod(paymentMethod);
   }
 

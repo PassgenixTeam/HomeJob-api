@@ -4,7 +4,7 @@ import { appConfig } from '@app/core';
 import {
   AddPaymentMethodDto,
   CreatePaymentIntentDto,
-  CreatePaymentMethodDto,
+  CreatePaymentMethodsDto,
 } from './dto';
 import { CreateCustomerPaymentDto } from './dto/create-customer-payment.dto';
 import { CapturePaymentIntentDto } from './dto/capture-payment-intent.dto';
@@ -182,7 +182,7 @@ export class StripeService {
   }
 
   async createPaymentMethod(
-    input: CreatePaymentMethodDto,
+    input: CreatePaymentMethodsDto,
   ): Promise<Stripe.PaymentMethod> {
     const { token, customerId } = input;
     const paymentMethod = await this.stripe.paymentMethods.create({

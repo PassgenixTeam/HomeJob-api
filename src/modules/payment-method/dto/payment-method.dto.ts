@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreatePaymentMethodsDto {
-  @ApiProperty({ type: String })
-  customerId: string;
+export class PaymentMethodDto {
+  @ApiProperty({ type: Boolean })
+  isDefault: boolean;
 
   @ApiProperty({ type: String })
   token: string;

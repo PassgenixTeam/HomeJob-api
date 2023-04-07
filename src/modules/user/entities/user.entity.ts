@@ -2,6 +2,7 @@ import { Column, Entity, OneToMany } from 'typeorm';
 import { SessionEntity } from '../../session/entities/session.entity';
 import { BaseEntity, ROLE } from '@app/common';
 import { Expose } from 'class-transformer';
+import { PaymentMethodEntity } from '../../payment-method/entities/payment-method.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity extends BaseEntity {
@@ -32,6 +33,33 @@ export class UserEntity extends BaseEntity {
 
   @Column({ default: ROLE.FREELANCE })
   role: string;
+
+  @Column()
+  stripeCustomerId: string;
+
+  @Column()
+  address: string;
+
+  @Column()
+  city: string;
+
+  @Column()
+  country: string;
+
+  @Column()
+  line1: string;
+
+  @Column()
+  line2: string;
+
+  @Column()
+  phone: string;
+
+  @Column()
+  state: string;
+
+  @OneToMany(() => PaymentMethodEntity, (paymentMethod) => paymentMethod.user)
+  paymentMethods: PaymentMethodEntity[];
 
   @Expose()
   loginSession: SessionEntity;

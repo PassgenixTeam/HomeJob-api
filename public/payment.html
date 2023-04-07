@@ -326,10 +326,12 @@
               return result.token.id;
             });
 
+          console.log('token', token);
           const btnCreatePaymentMethod = document.getElementById(
             'btnCreatePaymentMethod',
           );
           btnCreatePaymentMethod.addEventListener('click', async () => {
+            console.log(token);
             const { data } = await fetch('api/stripe/create-payment-method', {
               method: 'POST',
               headers: {

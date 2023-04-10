@@ -1,7 +1,9 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { Auth, AuthUser } from '../../../libs/core/src';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('transaction')
 @Controller('transaction')
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}

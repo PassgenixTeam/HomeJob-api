@@ -8,7 +8,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"></script>
     <script src="https://www.paypal.com/sdk/js?client-id=Ab-VSDF5CcI3gVaD0dk2X6zJHifuG-9TriWNbFFx-V_VijGyi8318LwdXoNqsivCx_dhgr7kyoxy3kJs"></script>
     <script>
-      var orderId = null;
       paypal
         .Buttons({
           createOrder: function (data, actions) {
@@ -17,15 +16,17 @@
                 amount: 100,
               })
               .then(function (response) {
-                orderId = response.data.data;
-                console.log('orderId', orderId);
-                return response.data.data;
+                window.orderId = response.data.data;
+                console.log('orderId', window.orderId.id);
+                return response.data.data.id;
               });
           },
           onApprove: function (data, actions) {
+            console.log('orderId', window.orderId);
+
             return axios
               .post('/api/paypal/capture-order', {
-                orderId: orderId,
+                orderId: window.orderId.id,
               })
               .then(function (response) {
                 alert('Payment completed successfully!');
@@ -35,7 +36,7 @@
             alert('Payment was cancelled.');
           },
           onError: function (err) {
-            console.log(err);
+            console.log('Lỗi tè le: ', err);
             alert('An error occurred while processing the payment.');
           },
         })

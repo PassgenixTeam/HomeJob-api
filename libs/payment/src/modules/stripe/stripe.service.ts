@@ -254,6 +254,8 @@ export class StripeService {
       const capture = await this.stripe.paymentIntents.capture(
         paymentIntent.id,
       );
+
+      return capture;
     }
 
     return paymentIntent;

@@ -29,6 +29,8 @@ export class PaymentMethodService {
       );
       if (!stripeCustomer) {
         stripeCustomerId = await this.createCustomer(user);
+      } else {
+        stripeCustomerId = stripeCustomer.id;
       }
     }
 
@@ -81,8 +83,58 @@ export class PaymentMethodService {
     return `This action returns a #${id} paymentMethod`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} paymentMethod`;
+  async setDefault(id: string, userId: string) {
+    await this.paymentMethodRepository.update(
+      {
+        user: {
+          id: userId,
+        },
+      },
+      {
+        isDefault: false,
+      },
+    );
+
+    await this.paymentMethodRepository.update(
+      {
+        id,
+        user: {
+          id: userId,
+        },
+      },
+      {
+        isDefault: true,
+      },
+    );
+
+    return 'Payment method set as default.';
+  }
+
+  async remove(id: string, userId: string) {
+    const paymentMethod = await this.paymentMethodRepository.findOne({
+      where: {
+        id,
+        user: {
+          id: userId,
+        },
+      },
+    });
+
+    if (!paymentMethod) {
+      throw new Error('Payment method not found.');
+    }
+
+    await Promise.all([
+      this.paymentMethodRepository.delete({
+        id,
+        user: {
+          id: userId,
+        },
+      }),
+      this.stripeService.removePaymentMethod(paymentMethod.paymentMethodId),
+    ]);
+
+    return 'Payment method removed.';
   }
 
   private async createCustomer(user: UserEntity) {

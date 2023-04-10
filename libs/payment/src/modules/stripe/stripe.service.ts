@@ -327,4 +327,12 @@ export class StripeService {
       throw err;
     }
   }
+
+  async removePaymentMethod(paymentMethodId: string) {
+    const paymentMethod = await this.stripe.paymentMethods.detach(
+      paymentMethodId,
+    );
+
+    return paymentMethod;
+  }
 }

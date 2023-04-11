@@ -4,6 +4,7 @@ import { BaseEntity, ROLE } from '@app/common';
 import { Expose } from 'class-transformer';
 import { PaymentMethodEntity } from '../../payment-method/entities/payment-method.entity';
 import { TransactionEntity } from '../../transaction/entities/transaction.entity';
+import { CoinEntity } from '../../coin/entities/coin.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity extends BaseEntity {
@@ -72,6 +73,9 @@ export class UserEntity extends BaseEntity {
 
   @OneToMany(() => TransactionEntity, (transaction) => transaction.user)
   transactions: TransactionEntity[];
+
+  @OneToMany(() => CoinEntity, (coin) => coin.user)
+  coins: CoinEntity[];
 
   @Expose()
   loginSession: SessionEntity;

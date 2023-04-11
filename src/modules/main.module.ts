@@ -10,6 +10,7 @@ import { JobModule } from './job/job.module';
 import { MappingJobSkillModule } from './mapping-job-skill/mapping-job-skill.module';
 import { PaymentMethodModule } from './payment-method/payment-method.module';
 import { TransactionModule } from './transaction/transaction.module';
+import { CoinModule } from './coin/coin.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { TransactionModule } from './transaction/transaction.module';
     MappingJobSkillModule,
     PaymentMethodModule,
     TransactionModule,
+    CoinModule,
   ],
   controllers: [],
   providers: [],

@@ -1,9 +1,9 @@
 import { Column, Entity } from 'typeorm';
-import { FILE_STATUS } from '../enum/upload.enum';
+import { FILE_STATUS } from '../enum/file.enum';
 import { BaseEntity } from '@app/common';
 
-@Entity({ name: 'uploads' })
-export class UploadEntity extends BaseEntity {
+@Entity({ name: 'files' })
+export class FileEntity extends BaseEntity {
   @Column()
   type: string;
 

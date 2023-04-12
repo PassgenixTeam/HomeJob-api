@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateMappingJobSkillDto } from './dto/create-mapping-job-skill.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MappingJobSkillEntity } from './entities/mapping-job-skill.entity';
-import { QueryRunner, Repository } from 'typeorm';
+import { In, QueryRunner, Repository } from 'typeorm';
 import { plainToInstance } from 'class-transformer';
 
 @Injectable()
@@ -28,14 +28,11 @@ export class MappingJobSkillService {
     jobId: string,
     input: string[],
   ) {
-    // get all skill in job
-    const skills = await this.mappingJobSkillRepository.find({
-      where: {
-        job: {
-          id: jobId,
-        },
-      },
-    });
+    if (!input || !input.length) {
+      return true;
+    }
+
+    console.log('tao', input);
 
     await queryRunner.manager.save<MappingJobSkillEntity[]>(
       input.map((skillId) => {
@@ -50,7 +47,27 @@ export class MappingJobSkillService {
       }),
     );
 
-    return skills;
+    return true;
+  }
+
+  async deleteMultiple(
+    queryRunner: QueryRunner,
+    jobId: string,
+    input: string[],
+  ) {
+    if (!input || !input.length) {
+      return true;
+    }
+
+    await queryRunner.manager
+      .createQueryBuilder()
+      .delete()
+      .from(MappingJobSkillEntity)
+      .where('jobId = :jobId', { jobId })
+      .andWhere('skillId IN (:...skillIds)', { skillIds: input })
+      .execute();
+
+    return true;
   }
 
   remove(id: string) {

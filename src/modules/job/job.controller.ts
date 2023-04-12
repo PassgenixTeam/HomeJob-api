@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { JobService } from './job.service';
 import { CreateJobDto } from './dto/create-job.dto';
@@ -34,13 +35,19 @@ export class JobController {
     return this.jobService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateJobDto: UpdateJobDto) {
-    return this.jobService.update(id, updateJobDto);
+  @Put(':id')
+  @Auth()
+  update(
+    @Param('id') id: string,
+    @Body() updateJobDto: UpdateJobDto,
+    @AuthUser('id') userId: string,
+  ) {
+    return this.jobService.update(id, updateJobDto, userId);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.jobService.remove(id);
+  @Auth()
+  remove(@Param('id') id: string, @AuthUser('id') userId: string) {
+    return this.jobService.remove(id, userId);
   }
 }

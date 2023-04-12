@@ -73,7 +73,10 @@ export class AuthService {
 
   createAccessToken(user: UserEntity): string {
     const token = this.jwtService.sign(
-      { uid: user.id, cacheId: uuidV4() },
+      {
+        uid: user.id,
+        cacheId: uuidV4(),
+      },
       {
         expiresIn: appConfig.jwt.JWT_EXPIRES_IN,
         secret: appConfig.jwt.JWT_SECRET_KEY,

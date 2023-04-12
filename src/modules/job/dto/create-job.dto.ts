@@ -28,8 +28,8 @@ export class CreateJobDto {
   @ApiProperty({ type: Number, description: 'Hourly From' })
   hourlyFrom: number;
 
-  @ApiProperty({ type: String, description: 'Attachments' })
-  attachments: string;
+  @ApiProperty({ type: [String], description: 'Attachments' })
+  attachments: string[];
 
   @ApiProperty({ type: String, description: 'Status' })
   status: string;

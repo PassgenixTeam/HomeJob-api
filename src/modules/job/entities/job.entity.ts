@@ -1,7 +1,7 @@
 import { Column, DeepPartial, Entity, OneToMany } from 'typeorm';
 import { BaseEntity } from '@app/common';
 import { MappingJobSkillEntity } from '../../mapping-job-skill/entities/mapping-job-skill.entity';
-import { Exclude, Expose } from 'class-transformer';
+import { Exclude } from 'class-transformer';
 import { SubSkillEntity } from '../../sub-skill/entities/sub-skill.entity';
 
 @Entity({ name: 'jobs' })
@@ -42,6 +42,9 @@ export class JobEntity extends BaseEntity {
   @OneToMany(
     () => MappingJobSkillEntity,
     (mappingJobSkill) => mappingJobSkill.job,
+    {
+      onDelete: 'CASCADE',
+    },
   )
   mappingJobSkill: MappingJobSkillEntity[];
 

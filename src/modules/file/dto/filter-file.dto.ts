@@ -1,7 +1,7 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { IsEnum, IsOptional } from 'class-validator';
 import { EnumTransform } from '@app/common';
-import { FILE_STATUS } from '../enum/upload.enum';
+import { FILE_STATUS } from '../enum/file.enum';
 
 export class FilterFileDto {
   @ApiProperty({ required: false })

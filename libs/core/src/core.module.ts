@@ -19,6 +19,7 @@ import { SessionService } from '../../../src/modules/session/session.service';
 import { SessionEntity } from '../../../src/modules/session/entities/session.entity';
 import { CacheModule } from './cache/cache.module';
 import { PassportModule } from '@nestjs/passport';
+import { BullModule } from '@nestjs/bull';
 
 @Global()
 @Module({
@@ -41,6 +42,13 @@ import { PassportModule } from '@nestjs/passport';
       }),
     }),
     CacheModule.register(),
+    BullModule.forRoot({
+      redis: {
+        host: appConfig.redis.REDIS_HOST,
+        port: +appConfig.redis.REDIS_PORT,
+        password: appConfig.redis.REDIS_PASSWORD,
+      },
+    }),
   ],
   controllers: [],
   providers: [

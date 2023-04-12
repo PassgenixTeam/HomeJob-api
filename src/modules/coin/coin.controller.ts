@@ -13,7 +13,9 @@ import { UpdateCoinDto } from './dto/update-coin.dto';
 import { CoinPaymentIntentDto } from './dto/coin-payment-intent.dto';
 import { Auth, AuthUser } from '../../../libs/core/src';
 import { ConfirmPaymentIntentDto } from '@app/payment';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('coin')
 @Controller('coin')
 export class CoinController {
   constructor(private readonly coinService: CoinService) {}

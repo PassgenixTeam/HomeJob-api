@@ -2,10 +2,10 @@ import {
   Controller,
   Get,
   Post,
-  UploadedFiles,
   UseInterceptors,
   Query,
   Delete,
+  UploadedFiles,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import {
@@ -15,23 +15,23 @@ import {
   ApiPayloadTooLargeResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { UploadService } from './upload.service';
 import { Auth, AuthUser } from '../../../libs/core/src';
 import { multerMemoryOption } from '../../../libs/common/src';
 import { FilterFileDto } from './dto/filter-file.dto';
+import { FileService } from './file.service';
 
-@ApiTags('uploads')
-@Controller('uploads')
-export class UploadController {
-  constructor(private readonly uploadService: UploadService) {}
+@ApiTags('files')
+@Controller('files')
+export class FileController {
+  constructor(private readonly fileService: FileService) {}
 
-  @ApiOperation({ summary: 'Get a upload all' })
+  @ApiOperation({ summary: 'Get a file all' })
   @Get('')
   async getAll(@Query() filter: FilterFileDto) {
-    return this.uploadService.getAll(filter);
+    return this.fileService.getAll(filter);
   }
 
-  @ApiOperation({ summary: 'Upload files' })
+  @ApiOperation({ summary: 'Create files' })
   @Auth()
   @UseInterceptors(FilesInterceptor('files', null, multerMemoryOption))
   @ApiConsumes('multipart/form-data')
@@ -50,19 +50,19 @@ export class UploadController {
     },
   })
   @ApiPayloadTooLargeResponse({
-    description: 'The upload files size is greater than 10 MB',
+    description: 'The file files size is greater than 25 MB',
   })
   @Post()
-  upload(
+  file(
     @UploadedFiles() files: Express.Multer.File[],
     @AuthUser('id') userId: string,
   ) {
-    return this.uploadService.create(files);
+    return this.fileService.create(files);
   }
 
-  @ApiOperation({ summary: 'Delete all upload' })
+  @ApiOperation({ summary: 'Delete all file' })
   @Delete()
   async removeAll() {
-    return this.uploadService.removeAll();
+    return this.fileService.removeAll();
   }
 }

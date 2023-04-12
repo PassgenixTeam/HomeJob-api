@@ -34,7 +34,7 @@ export class UserEntity extends BaseEntity {
   sessions: SessionEntity[];
 
   @Column({ default: ROLE.FREELANCE })
-  role: string;
+  role: ROLE;
 
   @Column({ nullable: true })
   stripeCustomerId: string;

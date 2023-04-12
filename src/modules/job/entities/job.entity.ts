@@ -3,6 +3,12 @@ import { BaseEntity } from '@app/common';
 import { MappingJobSkillEntity } from '../../mapping-job-skill/entities/mapping-job-skill.entity';
 import { Exclude } from 'class-transformer';
 import { SubSkillEntity } from '../../sub-skill/entities/sub-skill.entity';
+import {
+  EXPERIENCE_LEVEL,
+  JOB_STATUS,
+  PROJECT_LENGTH,
+  SCOPE_TYPE,
+} from '../enums/job.enum';
 
 @Entity({ name: 'jobs' })
 export class JobEntity extends BaseEntity {
@@ -16,13 +22,13 @@ export class JobEntity extends BaseEntity {
   description: string;
 
   @Column()
-  scopeType: string;
+  scopeType: SCOPE_TYPE;
 
   @Column()
-  scopeLevel: string;
+  experienceLevel: EXPERIENCE_LEVEL;
 
   @Column()
-  scopeTime: string;
+  projectLength: PROJECT_LENGTH;
 
   @Column()
   budget: number;
@@ -37,7 +43,7 @@ export class JobEntity extends BaseEntity {
   attachments: string;
 
   @Column()
-  status: string;
+  status: JOB_STATUS;
 
   @OneToMany(
     () => MappingJobSkillEntity,

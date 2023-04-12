@@ -17,7 +17,6 @@ export class JobService {
     private dataSource: DataSource,
   ) {}
 
-  // @Transactional()
   async create(userId: string, input: CreateJobDto) {
     const queryRunner = this.dataSource.createQueryRunner();
 

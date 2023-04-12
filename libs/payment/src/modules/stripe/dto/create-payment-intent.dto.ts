@@ -8,8 +8,14 @@ export class CreatePaymentIntentDto {
   paymentMethodId: string;
 
   @ApiProperty({ type: String })
-  currency: string;
+  currency = 'usd';
 
   @ApiProperty({ type: Number })
   amount = 1;
+
+  @ApiProperty({ type: String })
+  description: string;
+
+  @ApiProperty({ type: Object })
+  metadata: Record<string, any> = {};
 }

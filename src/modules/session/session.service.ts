@@ -61,6 +61,7 @@ export class SessionService {
       const data = {
         ...user,
         loginSession: session,
+        cacheId,
       };
 
       await this.redisService.set(

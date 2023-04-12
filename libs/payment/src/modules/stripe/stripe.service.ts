@@ -4,7 +4,7 @@ import { appConfig } from '@app/core';
 import {
   AddPaymentMethodDto,
   CreatePaymentIntentDto,
-  CreatePaymentMethodDto,
+  CreatePaymentMethodsDto,
 } from './dto';
 import { CreateCustomerPaymentDto } from './dto/create-customer-payment.dto';
 import { CapturePaymentIntentDto } from './dto/capture-payment-intent.dto';
@@ -139,7 +139,14 @@ export class StripeService {
 
   async createPaymentIntent(input: CreatePaymentIntentDto) {
     try {
-      const { amount, currency, customerId, paymentMethodId } = input;
+      const {
+        amount,
+        currency,
+        customerId,
+        paymentMethodId,
+        description,
+        metadata,
+      } = input;
 
       const paymentIntent = await this.stripe.paymentIntents.create({
         receipt_email: 'uptimumdn2000@gmail.com',
@@ -148,6 +155,8 @@ export class StripeService {
         amount: amount,
         currency: currency,
         capture_method: 'manual',
+        metadata,
+        description: description,
       });
 
       return {
@@ -182,7 +191,7 @@ export class StripeService {
   }
 
   async createPaymentMethod(
-    input: CreatePaymentMethodDto,
+    input: CreatePaymentMethodsDto,
   ): Promise<Stripe.PaymentMethod> {
     const { token, customerId } = input;
     const paymentMethod = await this.stripe.paymentMethods.create({
@@ -239,6 +248,14 @@ export class StripeService {
     return paymentIntent;
   }
 
+  async getPaymentIntent(paymentIntentId: string) {
+    const paymentIntent = await this.stripe.paymentIntents.retrieve(
+      paymentIntentId,
+    );
+
+    return paymentIntent;
+  }
+
   async confirmPaymentIntent(input: ConfirmPaymentIntentDto) {
     const { paymentIntentId } = input;
     const paymentIntent = await this.stripe.paymentIntents.confirm(
@@ -254,9 +271,20 @@ export class StripeService {
       const capture = await this.stripe.paymentIntents.capture(
         paymentIntent.id,
       );
+
+      return capture;
     }
 
     return paymentIntent;
+  }
+
+  async refundPaymentIntent(paymentIntentId: string, amount: number) {
+    const refund = await this.stripe.refunds.create({
+      payment_intent: paymentIntentId,
+      amount: amount,
+    });
+
+    return refund;
   }
 
   async webhook(payload: any, sig: string) {
@@ -326,5 +354,13 @@ export class StripeService {
     } catch (err) {
       throw err;
     }
+  }
+
+  async removePaymentMethod(paymentMethodId: string) {
+    const paymentMethod = await this.stripe.paymentMethods.detach(
+      paymentMethodId,
+    );
+
+    return paymentMethod;
   }
 }

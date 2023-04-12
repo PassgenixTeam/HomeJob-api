@@ -33,6 +33,7 @@ export class PaypalService {
 
   async createOrder(amount: number) {
     const accessToken = await this.getAccessToken();
+    console.log(accessToken);
 
     const { data } = await this.httpService.axiosRef({
       method: 'post',
@@ -68,6 +69,9 @@ export class PaypalService {
         'Content-Type': 'application/json',
       },
     });
+
+    console.log(data);
+
     return data;
   }
 

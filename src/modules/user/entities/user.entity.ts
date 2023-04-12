@@ -2,6 +2,9 @@ import { Column, Entity, OneToMany } from 'typeorm';
 import { SessionEntity } from '../../session/entities/session.entity';
 import { BaseEntity, ROLE } from '@app/common';
 import { Expose } from 'class-transformer';
+import { PaymentMethodEntity } from '../../payment-method/entities/payment-method.entity';
+import { TransactionEntity } from '../../transaction/entities/transaction.entity';
+import { CoinEntity } from '../../coin/entities/coin.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity extends BaseEntity {
@@ -32,6 +35,47 @@ export class UserEntity extends BaseEntity {
 
   @Column({ default: ROLE.FREELANCE })
   role: string;
+
+  @Column({ nullable: true })
+  stripeCustomerId: string;
+
+  @Column({ nullable: true })
+  address: string;
+
+  @Column({ nullable: true })
+  city: string;
+
+  @Column({ nullable: true })
+  country: string;
+
+  @Column({ nullable: true })
+  line1: string;
+
+  @Column({ nullable: true })
+  line2: string;
+
+  @Column({ nullable: true })
+  phone: string;
+
+  @Column({ nullable: true })
+  state: string;
+
+  @Column({ default: 0, type: 'float' })
+  balance: number;
+
+  @Column({ default: 0, type: 'float' })
+  coin: number;
+
+  // ----------------- Relations -----------------
+
+  @OneToMany(() => PaymentMethodEntity, (paymentMethod) => paymentMethod.user)
+  paymentMethods: PaymentMethodEntity[];
+
+  @OneToMany(() => TransactionEntity, (transaction) => transaction.user)
+  transactions: TransactionEntity[];
+
+  @OneToMany(() => CoinEntity, (coin) => coin.user)
+  coins: CoinEntity[];
 
   @Expose()
   loginSession: SessionEntity;

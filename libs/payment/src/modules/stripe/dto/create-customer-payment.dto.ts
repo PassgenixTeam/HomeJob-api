@@ -5,9 +5,6 @@ export class CreateCustomerPaymentDto {
   email: string;
 
   @ApiProperty({ type: String })
-  source: string;
-
-  @ApiProperty({ type: String })
   name: string;
 
   @ApiProperty({ type: String })

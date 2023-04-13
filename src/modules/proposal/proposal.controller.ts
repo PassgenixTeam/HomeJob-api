@@ -49,7 +49,7 @@ export class ProposalController {
 
   @Delete(':id')
   @Auth()
-  remove(@Param('id') id: string) {
-    return this.proposalService.remove(id);
+  remove(@Param('id') id: string, @AuthUser('id') userId: string) {
+    return this.proposalService.remove(id, userId);
   }
 }

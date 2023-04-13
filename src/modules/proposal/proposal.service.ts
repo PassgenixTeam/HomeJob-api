@@ -211,7 +211,26 @@ export class ProposalService {
     }
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} proposal`;
+  async remove(id: string, userId: string) {
+    const proposal = await this.proposalRepository.findOne({
+      where: {
+        id,
+      },
+    });
+
+    if (!proposal) {
+      throw new Error('Proposal not found');
+    }
+
+    if (proposal.createdBy !== userId) {
+      throw new Error('You are not owner of this proposal');
+    }
+
+    return this.proposalRepository
+      .createQueryBuilder()
+      .delete()
+      .where('id = :id', { id })
+      .andWhere('createdBy = :userId', { userId })
+      .execute();
   }
 }

@@ -10,5 +10,6 @@ import { UserEntity } from '../user/entities/user.entity';
   imports: [TypeOrmModule.forFeature([CoinEntity, UserEntity])],
   controllers: [CoinController],
   providers: [CoinService, StripeService],
+  exports: [CoinService],
 })
 export class CoinModule {}

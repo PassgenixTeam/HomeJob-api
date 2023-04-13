@@ -1,4 +1,4 @@
-export class BaseController {
+export class CustomError {
   constructor(private errorEnum: any) {}
 
   messageCode(error: any) {

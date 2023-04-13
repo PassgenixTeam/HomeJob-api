@@ -59,7 +59,9 @@ export class JobService {
 
       await queryRunner.commitTransaction();
 
-      await this.fileQueue.updateFileUsing(input.attachments);
+      if (input.attachments) {
+        await this.fileQueue.updateFileUsing(input.attachments);
+      }
 
       return this.findOne(job.id);
     } catch (error) {

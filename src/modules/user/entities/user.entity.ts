@@ -5,6 +5,7 @@ import { Expose } from 'class-transformer';
 import { PaymentMethodEntity } from '../../payment-method/entities/payment-method.entity';
 import { TransactionEntity } from '../../transaction/entities/transaction.entity';
 import { CoinEntity } from '../../coin/entities/coin.entity';
+import { ProposalEntity } from '../../proposal/entities/proposal.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity extends BaseEntity {
@@ -76,6 +77,11 @@ export class UserEntity extends BaseEntity {
 
   @OneToMany(() => CoinEntity, (coin) => coin.user)
   coins: CoinEntity[];
+
+  @OneToMany(() => ProposalEntity, (proposal) => proposal.user, {
+    onDelete: 'CASCADE',
+  })
+  proposals: ProposalEntity[];
 
   @Expose()
   loginSession: SessionEntity;

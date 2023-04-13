@@ -9,6 +9,7 @@ import {
   PROJECT_LENGTH,
   SCOPE_TYPE,
 } from '../enums/job.enum';
+import { ProposalEntity } from '../../proposal/entities/proposal.entity';
 
 @Entity({ name: 'jobs' })
 export class JobEntity extends BaseEntity {
@@ -53,6 +54,11 @@ export class JobEntity extends BaseEntity {
     },
   )
   mappingJobSkill: MappingJobSkillEntity[];
+
+  @OneToMany(() => ProposalEntity, (proposal) => proposal.job, {
+    onDelete: 'CASCADE',
+  })
+  proposals: ProposalEntity[];
 
   @Exclude()
   skills?: DeepPartial<SubSkillEntity[]>;

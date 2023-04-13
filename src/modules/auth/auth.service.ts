@@ -54,7 +54,7 @@ export class AuthService {
   }
 
   async register(input: RegisterDto) {
-    const { email, password, firstName, lastName } = input;
+    const { email, password, firstName, lastName, country } = input;
 
     const isExistsEmail = await this.usersRepository.findOne({
       where: { email },
@@ -68,6 +68,7 @@ export class AuthService {
       password: sha512(password),
       firstName,
       lastName,
+      country,
     });
   }
 

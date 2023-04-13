@@ -11,6 +11,7 @@ import { MappingJobSkillModule } from './mapping-job-skill/mapping-job-skill.mod
 import { PaymentMethodModule } from './payment-method/payment-method.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { CoinModule } from './coin/coin.module';
+import { ProposalModule } from './proposal/proposal.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { CoinModule } from './coin/coin.module';
     PaymentMethodModule,
     TransactionModule,
     CoinModule,
+    ProposalModule,
   ],
   controllers: [],
   providers: [],

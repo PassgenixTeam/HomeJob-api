@@ -9,10 +9,11 @@ import {
 } from '@app/payment';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CoinEntity } from './entities/coin.entity';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, QueryRunner, Repository } from 'typeorm';
 import { COIN_REASON, COIN_TITLE, COIN_TYPE } from './enums/coin.enum';
 import { UserEntity } from '../user/entities/user.entity';
 import { RedisService } from '../../../libs/core/src';
+import { plainToInstance } from 'class-transformer';
 
 const coinList = {
   10: 1.5,
@@ -139,5 +140,18 @@ export class CoinService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  createCoinProposal(user: UserEntity, coin: number, queryRunner: QueryRunner) {
+    return queryRunner.manager.save<CoinEntity>(
+      plainToInstance(CoinEntity, {
+        coin: -coin,
+        reason: COIN_REASON.COIN_BOOST_PROPOSAL,
+        type: COIN_TYPE.COIN_BOOST_PROPOSAL,
+        title: COIN_TITLE.COIN_BOOST_PROPOSAL,
+        balance: user.coin - coin,
+        user: { id: user.id } as any,
+      }),
+    );
   }
 }

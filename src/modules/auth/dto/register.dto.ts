@@ -12,4 +12,7 @@ export class RegisterDto {
 
   @ApiProperty({ type: String, example: 'Wick' })
   lastName: string;
+
+  @ApiProperty({ type: String, example: 'Viet Nam' })
+  country: string;
 }

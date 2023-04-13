@@ -22,7 +22,7 @@ export class BaseEntity {
   })
   updatedAt: Date;
 
-  @Column({ nullable: true, type: 'uuid' })
+  @Column({ nullable: true, type: 'uuid', name: 'created_by' })
   createdBy: string | Record<string, any>;
 
   @Column({ nullable: true, type: 'uuid' })

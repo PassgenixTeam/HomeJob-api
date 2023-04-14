@@ -23,6 +23,8 @@ export class AllExceptionsFilter
 
     let { errorCode, message } = this.messageCode(exception);
 
+    console.log('exception', exception);
+
     // temporary treatment
     if (exception?.getResponse()['message']) {
       errorCode = exception.getResponse()['statusCode'];

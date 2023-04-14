@@ -9,6 +9,7 @@ import {
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { Response } from '../interfaces/response.interface';
+import { CustomBadRequestException } from '../exception/custom-bad-request.exception';
 
 @Injectable()
 export class TransformInterceptor<T>
@@ -27,7 +28,8 @@ export class TransformInterceptor<T>
       }),
       catchError((err) => {
         this.logger.error(err.message, err.stack);
-        throw err;
+
+        throw new CustomBadRequestException(err.message, err.response);
       }),
     );
   }

@@ -14,6 +14,7 @@ import { CoinModule } from './coin/coin.module';
 import { ProposalModule } from './proposal/proposal.module';
 import { EducationModule } from './education/education.module';
 import { EmploymentModule } from './employment/employment.module';
+import { ProjectModule } from './project/project.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { EmploymentModule } from './employment/employment.module';
     ProposalModule,
     EducationModule,
     EmploymentModule,
+    ProjectModule,
   ],
   controllers: [],
   providers: [],

@@ -17,19 +17,19 @@ export class EmploymentEntity extends BaseEntity {
   title: string;
 
   @Column()
-  fromMonth: string;
+  fromMonth: number;
 
   @Column()
-  fromYear: string;
+  fromYear: number;
 
   @Column()
-  toMonth: string;
+  toMonth: number;
 
   @Column()
-  toYear: string;
+  toYear: number;
 
   @Column()
-  isCurrently: string;
+  isCurrently: boolean;
 
   @Column()
   description: string;

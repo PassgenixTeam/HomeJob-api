@@ -7,6 +7,7 @@ import { TransactionEntity } from '../../transaction/entities/transaction.entity
 import { CoinEntity } from '../../coin/entities/coin.entity';
 import { ProposalEntity } from '../../proposal/entities/proposal.entity';
 import { EducationEntity } from '../../education/entities/education.entity';
+import { EmploymentEntity } from '../../employment/entities/employment.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity extends BaseEntity {
@@ -91,6 +92,11 @@ export class UserEntity extends BaseEntity {
     onDelete: 'CASCADE',
   })
   educations: EducationEntity[];
+
+  @OneToMany(() => EmploymentEntity, (employment) => employment.user, {
+    onDelete: 'CASCADE',
+  })
+  employments: EmploymentEntity[];
 
   // ----------------- Expose -----------------
 

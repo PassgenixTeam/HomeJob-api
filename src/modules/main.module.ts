@@ -13,6 +13,7 @@ import { TransactionModule } from './transaction/transaction.module';
 import { CoinModule } from './coin/coin.module';
 import { ProposalModule } from './proposal/proposal.module';
 import { EducationModule } from './education/education.module';
+import { EmploymentModule } from './employment/employment.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { EducationModule } from './education/education.module';
     CoinModule,
     ProposalModule,
     EducationModule,
+    EmploymentModule,
   ],
   controllers: [],
   providers: [],

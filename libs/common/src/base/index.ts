@@ -1,2 +1,2 @@
-export * from './controller.base';
+export * from './custom-error';
 export * from './entity.base';

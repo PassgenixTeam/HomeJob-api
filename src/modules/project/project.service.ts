@@ -120,7 +120,7 @@ export class ProjectService {
 
         const attachments = await this.fileRepository
           .createQueryBuilder('file')
-          .where('file.url IN (:...urls)', { urls: [...common, ...list2Only] })
+          .where('file.url IN (:...urls)', { urls: input.attachments })
           .getMany();
 
         projectInstance.attachments = JSON.stringify(

@@ -14,6 +14,7 @@ import {
   differenceMultiArray,
   removeKeyUndefined,
 } from '../../../libs/common/src';
+import { FileEntity } from '../file/entities/file.entity';
 
 @Injectable()
 export class ProposalService {
@@ -24,6 +25,8 @@ export class ProposalService {
     private readonly fileQueue: FileQueue,
     private readonly redisService: RedisService,
     private readonly coinService: CoinService,
+    @InjectRepository(FileEntity)
+    private readonly fileRepository: Repository<FileEntity>,
   ) {}
 
   private readonly logger = new Logger(ProposalService.name);
@@ -41,7 +44,19 @@ export class ProposalService {
       proposalInstance.milestones = JSON.stringify(input.milestones);
 
       if (proposalInstance.attachments) {
-        proposalInstance.attachments = JSON.stringify(input.attachments);
+        const attachments = await this.fileRepository
+          .createQueryBuilder('file')
+          .where('file.url IN (:...urls)', { urls: input.attachments })
+          .getMany();
+
+        proposalInstance.attachments = JSON.stringify(
+          attachments.map((file) => {
+            return {
+              url: file.url,
+              size: file.size,
+            };
+          }),
+        );
       }
 
       const proposal = await queryRunner.manager.save<ProposalEntity>(
@@ -152,7 +167,19 @@ export class ProposalService {
         attachmentList1Only = list1Only;
         attachmentList2Only = list2Only;
 
-        proposalInstance.attachments = JSON.stringify(input.attachments);
+        const attachments = await this.fileRepository
+          .createQueryBuilder('file')
+          .where('file.url IN (:...urls)', { urls: input.attachments })
+          .getMany();
+
+        proposalInstance.attachments = JSON.stringify(
+          attachments.map((file) => {
+            return {
+              url: file.url,
+              size: file.size,
+            };
+          }),
+        );
       }
 
       removeKeyUndefined(proposalInstance);

@@ -12,6 +12,7 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { LoginSocialDto } from './dto/login-social.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -21,6 +22,11 @@ export class AuthController {
   @Post('login')
   login(@Body() input: LoginDto) {
     return this.authService.login(input);
+  }
+
+  @Post('login')
+  loginSocial(@Body() input: LoginSocialDto) {
+    return this.authService.loginSocial(input);
   }
 
   @Post('register')

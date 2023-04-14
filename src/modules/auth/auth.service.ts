@@ -9,6 +9,8 @@ import { JwtService } from '@nestjs/jwt';
 import { RedisService, appConfig } from '../../../libs/core/src';
 import { SessionService } from '../session/session.service';
 import { v4 as uuidV4 } from 'uuid';
+import { LoginSocialDto } from './dto/login-social.dto';
+import { UserSocial } from './interfaces/user-social.interface';
 
 @Injectable()
 export class AuthService {
@@ -32,6 +34,46 @@ export class AuthService {
 
     if (user.password !== sha512(password)) {
       throw new Error('Password is not correct');
+    }
+
+    const accessToken = this.createAccessToken(user);
+    const refreshToken = this.createRefreshToken(user);
+
+    await this.sessionService.create({
+      accessToken,
+      refreshToken,
+      user: user,
+    });
+
+    return {
+      user,
+      token: {
+        accessToken,
+        refreshToken,
+        expiredIn: appConfig.jwt.JWT_EXPIRES_IN,
+      },
+    };
+  }
+
+  async loginSocial(input: LoginSocialDto) {
+    const { token } = input;
+
+    const payload = this.jwtService.verifyAsync(token, {
+      secret: appConfig.client.JWT_SECRET_KEY_CLIENT,
+    }) as any as UserSocial;
+
+    let user = await this.usersRepository.findOne({
+      where: { email: payload.email },
+    });
+
+    if (!user) {
+      user = await this.usersRepository.save({
+        email: payload.email,
+        firstName: payload.firstName,
+        lastName: payload.lastName,
+        country: payload.country,
+        loginBy: payload.loginBy,
+      });
     }
 
     const accessToken = this.createAccessToken(user);

@@ -67,6 +67,9 @@ export class UserEntity extends BaseEntity {
   @Column({ default: 0, type: 'float' })
   coin: number;
 
+  @Column()
+  loginBy: string;
+
   // ----------------- Relations -----------------
 
   @OneToMany(() => PaymentMethodEntity, (paymentMethod) => paymentMethod.user)

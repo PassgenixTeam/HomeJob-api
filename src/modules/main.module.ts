@@ -12,6 +12,7 @@ import { PaymentMethodModule } from './payment-method/payment-method.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { CoinModule } from './coin/coin.module';
 import { ProposalModule } from './proposal/proposal.module';
+import { EducationModule } from './education/education.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ProposalModule } from './proposal/proposal.module';
     TransactionModule,
     CoinModule,
     ProposalModule,
+    EducationModule,
   ],
   controllers: [],
   providers: [],

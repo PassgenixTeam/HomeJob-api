@@ -24,7 +24,7 @@ export class AuthController {
     return this.authService.login(input);
   }
 
-  @Post('login')
+  @Post('login-social')
   loginSocial(@Body() input: LoginSocialDto) {
     return this.authService.loginSocial(input);
   }

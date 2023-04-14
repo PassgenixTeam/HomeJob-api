@@ -11,6 +11,7 @@ import { SessionService } from '../session/session.service';
 import { v4 as uuidV4 } from 'uuid';
 import { LoginSocialDto } from './dto/login-social.dto';
 import { UserSocial } from './interfaces/user-social.interface';
+import { LOGIN_BY } from '../user/enums/user.enum';
 
 @Injectable()
 export class AuthService {
@@ -111,6 +112,7 @@ export class AuthService {
       firstName,
       lastName,
       country,
+      loginBy: LOGIN_BY.EMAIL,
     });
   }
 

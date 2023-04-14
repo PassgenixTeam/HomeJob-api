@@ -6,10 +6,11 @@ import { PaymentMethodEntity } from '../../payment-method/entities/payment-metho
 import { TransactionEntity } from '../../transaction/entities/transaction.entity';
 import { CoinEntity } from '../../coin/entities/coin.entity';
 import { ProposalEntity } from '../../proposal/entities/proposal.entity';
+import { EducationEntity } from '../../education/entities/education.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity extends BaseEntity {
-  @Column()
+  @Column({ nullable: true })
   password: string;
 
   @Column({ unique: true })
@@ -85,6 +86,13 @@ export class UserEntity extends BaseEntity {
     onDelete: 'CASCADE',
   })
   proposals: ProposalEntity[];
+
+  @OneToMany(() => EducationEntity, (education) => education.user, {
+    onDelete: 'CASCADE',
+  })
+  educations: EducationEntity[];
+
+  // ----------------- Expose -----------------
 
   @Expose()
   loginSession: SessionEntity;

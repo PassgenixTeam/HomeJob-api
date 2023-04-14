@@ -139,6 +139,8 @@ export class JobService {
     try {
       const jobInstance = plainToInstance(JobEntity, input);
 
+      jobInstance.createdBy = userId;
+
       if (jobInstance.attachments) {
         const { list1Only, list2Only, common } = differenceMultiArray(
           JSON.parse(job.attachments).map((file: any) => file.url),

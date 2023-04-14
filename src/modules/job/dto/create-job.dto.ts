@@ -1,4 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
+import {
+  EXPERIENCE_LEVEL,
+  PROJECT_LENGTH,
+  SCOPE_TYPE,
+} from '../enums/job.enum';
+import { IsEnum } from 'class-validator';
+import { EnumTransform } from '../../../../libs/common/src';
 
 export class CreateJobDto {
   @ApiProperty({ type: String, description: 'Title' })
@@ -10,14 +17,28 @@ export class CreateJobDto {
   @ApiProperty({ type: String, description: 'Description' })
   description: string;
 
-  @ApiProperty({ type: String, description: 'Scope Type' })
-  scopeType: string;
+  @ApiProperty({ type: String, description: 'Scope Type', enum: SCOPE_TYPE })
+  @IsEnum(SCOPE_TYPE)
+  @EnumTransform(SCOPE_TYPE)
+  scopeType: SCOPE_TYPE;
 
-  @ApiProperty({ type: String, description: 'Scope Level' })
-  scopeLevel: string;
+  @ApiProperty({
+    type: String,
+    description: 'Scope Level',
+    enum: EXPERIENCE_LEVEL,
+  })
+  @IsEnum(EXPERIENCE_LEVEL)
+  @EnumTransform(EXPERIENCE_LEVEL)
+  experienceLevel: EXPERIENCE_LEVEL;
 
-  @ApiProperty({ type: String, description: 'Scope Time' })
-  scopeTime: string;
+  @ApiProperty({
+    type: String,
+    description: 'Scope Time',
+    enum: PROJECT_LENGTH,
+  })
+  @IsEnum(PROJECT_LENGTH)
+  @EnumTransform(PROJECT_LENGTH)
+  projectLength: PROJECT_LENGTH;
 
   @ApiProperty({ type: Number, description: 'Budget' })
   budget: number;

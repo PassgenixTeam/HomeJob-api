@@ -17,7 +17,7 @@ const dataSources: DataSource = new DataSource({
   namingStrategy: new SnakeNamingStrategy(),
   migrationsRun: true,
   entities: [join(__dirname + '../../**/*.entity{.ts,.js}')],
-  migrations: [join(__dirname + '../../database/migrations/*{.ts,.js}')],
+  migrations: [join(__dirname + '../../database/seeds/*{.ts,.js}')],
   synchronize: false,
   logging: true,
 });

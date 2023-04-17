@@ -18,5 +18,5 @@ export class CreateTransactionDto {
   paymentMethodId: string;
 
   @ApiProperty({ type: String })
-  freelancerId: string;
+  freelancerId?: string;
 }

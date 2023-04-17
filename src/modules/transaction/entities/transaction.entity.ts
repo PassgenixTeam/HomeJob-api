@@ -23,13 +23,6 @@ export class TransactionEntity extends BaseEntity {
   @Column({ name: 'payment_method_id', type: 'uuid' })
   paymentMethodId: string;
 
-  @Column({ nullable: true, name: 'freelancer_id', type: 'uuid' })
-  freelancerId: string;
-
-  @ManyToOne(() => UserEntity, (user) => user.transactions)
-  @JoinColumn({ name: 'freelancer_id' })
-  freelancer: UserEntity;
-
   @ManyToOne(() => UserEntity, (user) => user.transactions)
   @JoinColumn({ name: 'created_by' })
   user: UserEntity;

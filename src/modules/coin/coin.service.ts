@@ -94,9 +94,8 @@ export class CoinService {
 
     try {
       // create coin history
-      const balanceCoin = await this.userRepository.findOne({
+      const user = await this.userRepository.findOne({
         where: { id: userId },
-        select: ['coin'],
       });
 
       const coin = Number(isExistPaymentIntent.metadata.coin);
@@ -105,7 +104,7 @@ export class CoinService {
       coinEntity.reason = COIN_REASON.DEPOSIT;
       coinEntity.type = COIN_TYPE.DEPOSIT;
       coinEntity.title = COIN_TITLE.DEPOSIT;
-      coinEntity.balance = balanceCoin.coin + coin;
+      coinEntity.balance = user.coin + coin;
       coinEntity.user = {
         id: userId,
       } as any;
@@ -122,10 +121,16 @@ export class CoinService {
         await queryRunner.manager.update(
           UserEntity,
           { id: userId },
-          { coin: balanceCoin.coin + coin },
+          { coin: user.coin + coin },
         );
 
-        await this.redisService.del(cacheId);
+        await this.redisService.update(
+          cacheId,
+          JSON.stringify({
+            ...user,
+            coin: user.coin + coin,
+          }),
+        );
 
         await queryRunner.commitTransaction();
 

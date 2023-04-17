@@ -26,7 +26,7 @@ export class AllExceptionsFilter
     console.log('exception', exception);
 
     // temporary treatment
-    if (exception?.getResponse()['message']) {
+    if (exception?.getResponse?.()['message']) {
       errorCode = exception.getResponse()['statusCode'];
       message = exception.getResponse()['message'];
     }

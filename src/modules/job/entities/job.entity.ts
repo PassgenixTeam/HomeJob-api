@@ -16,7 +16,7 @@ export class JobEntity extends BaseEntity {
   @Column()
   title: string;
 
-  @Column()
+  @Column({ nullable: true })
   subtitle: string;
 
   @Column()

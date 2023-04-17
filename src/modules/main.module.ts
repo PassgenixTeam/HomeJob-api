@@ -15,6 +15,9 @@ import { ProposalModule } from './proposal/proposal.module';
 import { EducationModule } from './education/education.module';
 import { EmploymentModule } from './employment/employment.module';
 import { ProjectModule } from './project/project.module';
+import { ExperienceModule } from './experience/experience.module';
+import { LanguageModule } from './language/language.module';
+import { MappingUserLanguageModule } from './mapping-user-language/mapping-user-language.module';
 
 @Module({
   imports: [
@@ -36,6 +39,9 @@ import { ProjectModule } from './project/project.module';
     EducationModule,
     EmploymentModule,
     ProjectModule,
+    ExperienceModule,
+    LanguageModule,
+    MappingUserLanguageModule,
   ],
   controllers: [],
   providers: [],

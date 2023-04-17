@@ -9,6 +9,8 @@ import { ProposalEntity } from '../../proposal/entities/proposal.entity';
 import { EducationEntity } from '../../education/entities/education.entity';
 import { EmploymentEntity } from '../../employment/entities/employment.entity';
 import { ProjectEntity } from '../../project/entities/project.entity';
+import { ExperienceEntity } from '../../experience/entities/experience.entity';
+import { LanguageEntity } from '../../language/entities/language.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity extends BaseEntity {
@@ -103,6 +105,20 @@ export class UserEntity extends BaseEntity {
     onDelete: 'CASCADE',
   })
   projects: ProjectEntity[];
+
+  @OneToMany(() => ExperienceEntity, (experience) => experience.user, {
+    onDelete: 'CASCADE',
+  })
+  experiences: ExperienceEntity[];
+
+  @OneToMany(
+    () => LanguageEntity,
+    (language) => language.mappingUserLanguageEntity,
+    {
+      onDelete: 'CASCADE',
+    },
+  )
+  mappingUserLanguageEntity: LanguageEntity[];
 
   // ----------------- Expose -----------------
 

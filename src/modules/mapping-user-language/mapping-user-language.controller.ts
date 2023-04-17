@@ -12,7 +12,9 @@ import { CreateMappingUserLanguageDto } from './dto/create-mapping-user-language
 import { UpdateMappingUserLanguageDto } from './dto/update-mapping-user-language.dto';
 import { Auth, AuthUser } from '@app/core';
 import { MultipleMappingUserLanguageDto } from './dto/multiple-mapping-user-language.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('mapping-user-language')
 @Controller('mapping-user-language')
 export class MappingUserLanguageController {
   constructor(

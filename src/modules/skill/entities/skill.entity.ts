@@ -7,6 +7,9 @@ export class SkillEntity extends BaseEntity {
   @Column()
   name: string;
 
+  @Column()
+  order: number;
+
   @OneToMany(() => SubSkillEntity, (subSkill) => subSkill.skill)
   subSkills: SubSkillEntity[];
 }

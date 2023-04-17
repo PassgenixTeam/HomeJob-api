@@ -8,6 +8,9 @@ export class SubSkillEntity extends BaseEntity {
   @Column()
   name: string;
 
+  @Column()
+  order: number;
+
   @ManyToOne(() => SkillEntity, (skill) => skill.subSkills)
   @JoinColumn()
   skill: SkillEntity;

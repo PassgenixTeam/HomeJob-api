@@ -11,7 +11,9 @@ import { LanguageService } from './language.service';
 import { CreateLanguageDto } from './dto/create-language.dto';
 import { UpdateLanguageDto } from './dto/update-language.dto';
 import { Auth, AuthUser } from '@app/core';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('language')
 @Controller('language')
 export class LanguageController {
   constructor(private readonly languageService: LanguageService) {}

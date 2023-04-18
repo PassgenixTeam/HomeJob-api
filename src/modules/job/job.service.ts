@@ -10,6 +10,7 @@ import { differenceMultiArray, isJson, removeKeyUndefined } from '@app/common';
 import { FileEntity } from '../file/entities/file.entity';
 import { FileQueue } from '../file/queues/file.queue';
 import _ from 'lodash';
+import { JOB_STATUS } from './enums/job.enum';
 @Injectable()
 export class JobService {
   constructor(
@@ -35,6 +36,10 @@ export class JobService {
         .createQueryBuilder('file')
         .where('file.url IN (:...urls)', { urls: input.attachments })
         .getMany();
+
+      if (!input.status) {
+        input.status = JOB_STATUS.DRAFT;
+      }
 
       const job = await queryRunner.manager.save<JobEntity>(
         plainToInstance(JobEntity, {

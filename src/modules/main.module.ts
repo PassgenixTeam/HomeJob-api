@@ -18,6 +18,8 @@ import { ProjectModule } from './project/project.module';
 import { ExperienceModule } from './experience/experience.module';
 import { LanguageModule } from './language/language.module';
 import { MappingUserLanguageModule } from './mapping-user-language/mapping-user-language.module';
+import { CategoryModule } from './category/category.module';
+import { SubCategoryModule } from './sub-category/sub-category.module';
 
 @Module({
   imports: [
@@ -42,6 +44,8 @@ import { MappingUserLanguageModule } from './mapping-user-language/mapping-user-
     ExperienceModule,
     LanguageModule,
     MappingUserLanguageModule,
+    CategoryModule,
+    SubCategoryModule,
   ],
   controllers: [],
   providers: [],

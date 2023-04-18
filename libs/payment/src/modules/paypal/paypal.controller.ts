@@ -18,6 +18,11 @@ import { CreatePayoutDto } from './dto/create-payout.dto';
 export class PaypalController {
   constructor(private readonly paypalService: PaypalService) {}
 
+  @Get('client-id')
+  getClientId() {
+    return this.paypalService.getClientId();
+  }
+
   @Get('get-order/:id')
   getOrder(@Param('id') id: string) {
     return this.paypalService.getOrder(id);

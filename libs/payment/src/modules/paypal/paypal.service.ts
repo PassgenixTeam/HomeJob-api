@@ -14,6 +14,12 @@ export class PaypalService {
 
   constructor(private readonly httpService: HttpService) {}
 
+  async getClientId() {
+    return {
+      clientId: this.clientId,
+    };
+  }
+
   private async getAccessToken() {
     const { data } = await this.httpService.axiosRef({
       method: 'post',

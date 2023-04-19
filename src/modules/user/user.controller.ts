@@ -24,6 +24,12 @@ export class UserController {
   }
 
   @Auth()
+  @Get('me')
+  me(@AuthUser() user: any) {
+    return this.userService.me(user);
+  }
+
+  @Auth()
   @Get('profile')
   profile(@AuthUser() user: any) {
     return this.userService.profile(user);

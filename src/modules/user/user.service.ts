@@ -13,10 +13,23 @@ export class UserService {
     private usersRepository: Repository<UserEntity>,
   ) {}
 
-  async profile(user: UserEntity) {
+  async me(user: UserEntity) {
     delete user.loginSession;
     delete user.cacheId;
     return user;
+  }
+
+  async profile(user: UserEntity) {
+    delete user.loginSession;
+    delete user.cacheId;
+
+    const userEntity = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.educations', 'educations')
+      .where('user.id = :id', { id: user.id })
+      .getOne();
+
+    return userEntity;
   }
 
   findAll() {

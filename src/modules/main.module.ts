@@ -20,6 +20,7 @@ import { LanguageModule } from './language/language.module';
 import { MappingUserLanguageModule } from './mapping-user-language/mapping-user-language.module';
 import { CategoryModule } from './category/category.module';
 import { SubCategoryModule } from './sub-category/sub-category.module';
+import { MappingUserSkillModule } from './mapping-user-skill/mapping-user-skill.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { SubCategoryModule } from './sub-category/sub-category.module';
     MappingUserLanguageModule,
     CategoryModule,
     SubCategoryModule,
+    MappingUserSkillModule,
   ],
   controllers: [],
   providers: [],

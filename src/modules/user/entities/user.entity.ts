@@ -11,6 +11,7 @@ import { EmploymentEntity } from '../../employment/entities/employment.entity';
 import { ProjectEntity } from '../../project/entities/project.entity';
 import { ExperienceEntity } from '../../experience/entities/experience.entity';
 import { LanguageEntity } from '../../language/entities/language.entity';
+import { MappingUserSkillEntity } from '../../mapping-user-skill/entities/mapping-user-skill.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity extends BaseEntity {
@@ -119,6 +120,15 @@ export class UserEntity extends BaseEntity {
     },
   )
   mappingUserLanguageEntity: LanguageEntity[];
+
+  @OneToMany(
+    () => MappingUserSkillEntity,
+    (mappingUserSkill) => mappingUserSkill.user,
+    {
+      onDelete: 'CASCADE',
+    },
+  )
+  mappingUserSkill: MappingUserSkillEntity[];
 
   // ----------------- Expose -----------------
 

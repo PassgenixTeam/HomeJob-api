@@ -59,9 +59,11 @@ export class AuthService {
   async loginSocial(input: LoginSocialDto) {
     const { token } = input;
 
-    const payload = this.jwtService.verifyAsync(token, {
-      secret: appConfig.client.JWT_SECRET_KEY_CLIENT,
-    }) as any as UserSocial;
+    const payload = (
+      await this.jwtService.verifyAsync(token, {
+        secret: appConfig.client.JWT_SECRET_KEY_CLIENT,
+      })
+    ).data as any as UserSocial;
 
     let user = await this.usersRepository.findOne({
       where: { email: payload.email },
@@ -70,10 +72,11 @@ export class AuthService {
     if (!user) {
       user = await this.usersRepository.save({
         email: payload.email,
-        firstName: payload.firstName,
-        lastName: payload.lastName,
+        firstName: payload.name,
+        lastName: '',
         country: payload.country,
         loginBy: payload.loginBy,
+        avatarUrl: payload.avatarUrl,
       });
     }
 

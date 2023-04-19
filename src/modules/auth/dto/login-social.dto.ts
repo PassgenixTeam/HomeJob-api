@@ -7,9 +7,4 @@ export class LoginSocialDto {
   @ApiProperty({ type: String, description: 'Token' })
   @IsString()
   token: string;
-
-  @ApiProperty({ type: String, description: 'Login by' })
-  @IsEnum(LOGIN_BY)
-  @EnumTransform(LOGIN_BY)
-  loginBy: LOGIN_BY;
 }

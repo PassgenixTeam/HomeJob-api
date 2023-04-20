@@ -8,10 +8,10 @@ import {
   Delete,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { Auth, AuthUser } from '@app/core';
+import { RoleDto } from './dto/role.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -21,6 +21,12 @@ export class UserController {
   @Get()
   findAll() {
     return this.userService.findAll();
+  }
+
+  @Patch('role')
+  @Auth()
+  role(@Body() input: RoleDto, @AuthUser() user: any) {
+    return this.userService.role(input.role, user);
   }
 
   @Auth()

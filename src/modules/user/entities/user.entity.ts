@@ -10,8 +10,8 @@ import { EducationEntity } from '../../education/entities/education.entity';
 import { EmploymentEntity } from '../../employment/entities/employment.entity';
 import { ProjectEntity } from '../../project/entities/project.entity';
 import { ExperienceEntity } from '../../experience/entities/experience.entity';
-import { LanguageEntity } from '../../language/entities/language.entity';
 import { MappingUserSkillEntity } from '../../mapping-user-skill/entities/mapping-user-skill.entity';
+import { MappingUserLanguageEntity } from '../../mapping-user-language/entities/mapping-user-language.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity extends BaseEntity {
@@ -40,7 +40,7 @@ export class UserEntity extends BaseEntity {
   @OneToMany(() => SessionEntity, (session) => session.user)
   sessions: SessionEntity[];
 
-  @Column({ default: ROLE.FREELANCE })
+  @Column({ nullable: true })
   role: ROLE;
 
   @Column({ nullable: true })
@@ -112,14 +112,10 @@ export class UserEntity extends BaseEntity {
   })
   experiences: ExperienceEntity[];
 
-  @OneToMany(
-    () => LanguageEntity,
-    (language) => language.mappingUserLanguageEntity,
-    {
-      onDelete: 'CASCADE',
-    },
-  )
-  mappingUserLanguageEntity: LanguageEntity[];
+  @OneToMany(() => MappingUserLanguageEntity, (language) => language.user, {
+    onDelete: 'CASCADE',
+  })
+  mappingUserLanguageEntity: MappingUserLanguageEntity[];
 
   @OneToMany(
     () => MappingUserSkillEntity,

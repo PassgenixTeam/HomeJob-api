@@ -28,10 +28,11 @@ export class TransactionService {
 
   private readonly logger = new Logger(TransactionService.name);
 
-  create(
+  async create(
     queryRunner: QueryRunner,
     input: CreateTransactionDto,
     userId: string,
+    cacheId: string,
   ) {
     const { amount, paymentMethodId, description, freelancerId, refId, type } =
       input;
@@ -43,6 +44,29 @@ export class TransactionService {
     transaction.refId = refId;
     transaction.type = type;
     transaction.createdBy = userId;
+
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+
+    user.balance += amount;
+
+    await queryRunner.manager
+      .createQueryBuilder()
+      .update(UserEntity)
+      .set({
+        balance: user.balance,
+      })
+      .where('id = :id', { id: userId })
+      .execute();
+
+    await this.redisService.update(
+      cacheId,
+      JSON.stringify({
+        ...user,
+        balance: user.balance,
+      }),
+    );
 
     return queryRunner.manager.save(transaction);
   }
@@ -85,14 +109,8 @@ export class TransactionService {
   ) {
     const isExistPaymentIntent = await this.stripeService.getPaymentIntent(
       confirmPaymentIntentDto.paymentIntentId,
+      stripeCustomerId,
     );
-
-    if (
-      !isExistPaymentIntent ||
-      isExistPaymentIntent.customer !== stripeCustomerId
-    ) {
-      throw new Error('Payment intent does not exist');
-    }
 
     const queryRunner = this.dataSource.createQueryRunner();
 
@@ -110,30 +128,12 @@ export class TransactionService {
           type: TYPE_PAYMENT_METHOD.STRIPE,
         },
         userId,
-      );
-
-      const user = await this.userRepository.findOne({
-        where: { id: userId },
-      });
-
-      user.balance += isExistPaymentIntent.amount;
-
-      await queryRunner.manager
-        .createQueryBuilder()
-        .update(UserEntity)
-        .set({
-          balance: user.balance,
-        })
-        .where('id = :id', { id: userId })
-        .execute();
-
-      await this.redisService.update(
         cacheId,
-        JSON.stringify({
-          ...user,
-          balance: user.balance,
-        }),
       );
+
+      await this.stripeService.confirmPaymentIntent({
+        paymentIntentId: confirmPaymentIntentDto.paymentIntentId,
+      });
 
       await queryRunner.commitTransaction();
 

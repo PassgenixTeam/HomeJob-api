@@ -10,5 +10,6 @@ import { UserEntity } from '../user/entities/user.entity';
   imports: [TypeOrmModule.forFeature([TransactionEntity, UserEntity])],
   controllers: [TransactionController],
   providers: [TransactionService, StripeService],
+  exports: [TransactionService],
 })
 export class TransactionModule {}

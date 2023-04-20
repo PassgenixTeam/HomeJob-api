@@ -248,10 +248,18 @@ export class StripeService {
     return paymentIntent;
   }
 
-  async getPaymentIntent(paymentIntentId: string) {
+  async getPaymentIntent(paymentIntentId: string, stripeCustomerId: string) {
     const paymentIntent = await this.stripe.paymentIntents.retrieve(
       paymentIntentId,
     );
+
+    if (!paymentIntent || paymentIntent.customer !== stripeCustomerId) {
+      throw new Error('Payment intent does not exist');
+    }
+
+    if (paymentIntent.status === 'succeeded') {
+      throw new Error('Payment intent already succeeded');
+    }
 
     return paymentIntent;
   }
@@ -272,7 +280,15 @@ export class StripeService {
         paymentIntent.id,
       );
 
+      if (capture.status !== 'succeeded') {
+        throw new Error('Payment intent not confirmed');
+      }
+
       return capture;
+    }
+
+    if (paymentIntent.status !== 'succeeded') {
+      throw new Error('Payment intent not confirmed');
     }
 
     return paymentIntent;

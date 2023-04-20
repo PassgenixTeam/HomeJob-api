@@ -21,6 +21,8 @@ import { MappingUserLanguageModule } from './mapping-user-language/mapping-user-
 import { CategoryModule } from './category/category.module';
 import { SubCategoryModule } from './sub-category/sub-category.module';
 import { MappingUserSkillModule } from './mapping-user-skill/mapping-user-skill.module';
+import { OfferModule } from './offer/offer.module';
+import { ContractModule } from './contract/contract.module';
 
 @Module({
   imports: [
@@ -48,6 +50,8 @@ import { MappingUserSkillModule } from './mapping-user-skill/mapping-user-skill.
     CategoryModule,
     SubCategoryModule,
     MappingUserSkillModule,
+    OfferModule,
+    ContractModule,
   ],
   controllers: [],
   providers: [],

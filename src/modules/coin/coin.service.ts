@@ -78,14 +78,8 @@ export class CoinService {
   ) {
     const isExistPaymentIntent = await this.stripeService.getPaymentIntent(
       confirmPaymentIntentDto.paymentIntentId,
+      stripeCustomerId,
     );
-
-    if (
-      !isExistPaymentIntent ||
-      isExistPaymentIntent.customer !== stripeCustomerId
-    ) {
-      throw new Error('Payment intent does not exist');
-    }
 
     const queryRunner = this.dataSource.createQueryRunner();
 
@@ -115,29 +109,24 @@ export class CoinService {
         confirmPaymentIntentDto,
       );
 
-      if (paymentIntent.status === 'succeeded') {
-        // update coin balance
+      // update coin balance
+      await queryRunner.manager.update(
+        UserEntity,
+        { id: userId },
+        { coin: user.coin + coin },
+      );
 
-        await queryRunner.manager.update(
-          UserEntity,
-          { id: userId },
-          { coin: user.coin + coin },
-        );
+      await this.redisService.update(
+        cacheId,
+        JSON.stringify({
+          ...user,
+          coin: user.coin + coin,
+        }),
+      );
 
-        await this.redisService.update(
-          cacheId,
-          JSON.stringify({
-            ...user,
-            coin: user.coin + coin,
-          }),
-        );
+      await queryRunner.commitTransaction();
 
-        await queryRunner.commitTransaction();
-
-        return 'Payment intent confirmed';
-      }
-
-      throw new Error('Payment intent not confirmed');
+      return 'Payment intent confirmed';
     } catch (error) {
       this.logger.error(error);
       await queryRunner.rollbackTransaction();

@@ -5,5 +5,5 @@ export class ConfirmPaymentIntentDto {
   paymentIntentId: string;
 
   @ApiProperty({ type: String })
-  data: string;
+  data?: string;
 }

@@ -12,7 +12,7 @@ import { OfferEntity } from '../offer/entities/offer.entity';
 import { ContractPaymentIntentDto } from './dto/contract-payment-intent.dto';
 import { OFFER_STATUS, PAY_TYPE } from '../offer/enums/offer.enum';
 import { MilestoneDto } from '../proposal/dto/create-proposal.dto';
-import { PAY_STATUS } from './enums/contract.enum';
+import { CONTRACT_STATUS, PAY_STATUS } from './enums/contract.enum';
 import { TransactionService } from '../transaction/transaction.service';
 import { TYPE_PAYMENT_METHOD } from '../transaction/enums/transaction.enum';
 
@@ -21,8 +21,6 @@ export class ContractService {
   constructor(
     @InjectRepository(ContractEntity)
     private readonly contractRepository: Repository<ContractEntity>,
-    @InjectRepository(OfferEntity)
-    private readonly offerRepository: Repository<OfferEntity>,
     private readonly stripeService: StripeService,
     private readonly dataSource: DataSource,
     private readonly transactionService: TransactionService,
@@ -35,27 +33,14 @@ export class ContractService {
     stripeCustomerId: string,
     userId: string,
   ) {
-    const offer = await this.offerRepository.findOne({
-      where: { id: input.contractId },
-    });
-
-    if (!offer) {
-      throw new Error('Offer not found');
-    }
-
-    if (offer.createdBy !== userId) {
-      throw new Error('You are not the owner of this offer');
-    }
-
-    if (offer.status !== OFFER_STATUS.ACCEPTED) {
-      throw new Error('Offer is not accepted');
-    }
+    const contract = await this.getContract(input.contractId, userId);
 
     const deposit =
-      offer.payType === PAY_TYPE.FIXED
-        ? offer.payFixedPrice
-        : (JSON.stringify(offer.projectMilestones) as any as MilestoneDto)
-            .amount;
+      contract.payType === PAY_TYPE.FIXED
+        ? contract.payFixedPrice
+        : // (JSON.stringify(contract.projectMilestones) as any as MilestoneDto)
+          //     .amount;
+          0;
 
     const fee = 0.5;
     const taxes = 0;
@@ -65,9 +50,9 @@ export class ContractService {
       amount: total,
       currency: 'usd',
       customerId: stripeCustomerId,
-      description: `Deposit for offer ${offer.id}`,
+      description: `Deposit for contract ${contract.contractId}`,
       metadata: {
-        contractId: offer.contractId,
+        contractId: contract.contractId,
       },
       paymentMethodId: input.paymentMethodId,
     });
@@ -100,6 +85,10 @@ export class ContractService {
       throw new Error('You are not the owner of this contract');
     }
 
+    if (contract.offerStatus !== OFFER_STATUS.ACCEPTED) {
+      throw new Error('Offer is not accepted');
+    }
+
     if (contract.payStatus === PAY_STATUS.PAID) {
       throw new Error('Contract is already paid');
     }
@@ -112,7 +101,7 @@ export class ContractService {
       const updatedContract = await queryRunner.manager
         .createQueryBuilder()
         .update(ContractEntity)
-        .set({ payStatus: PAY_STATUS.PAID })
+        .set({ payStatus: PAY_STATUS.PAID, status: CONTRACT_STATUS.STARTED })
         .where('id = :id', { id: contract.id })
         .execute();
 
@@ -167,23 +156,131 @@ export class ContractService {
     }
   }
 
+  /**
+   * Accepts an offer with the specified ID for the given freelancer user.
+   * @param id The ID of the offer to accept.
+   * @param userId The ID of the freelancer user accepting the offer.
+   * @returns A Promise that resolves to `true` if the offer was successfully accepted.
+   * @throws If the offer is not found or has already been accepted.
+   */
+  async acceptOffer(id: string, userId: string) {
+    const contract = await this.contractRepository.findOne({
+      where: { id, freelancerId: userId },
+    });
+
+    if (!contract) {
+      throw new Error('Offer not found');
+    }
+
+    if (contract.offerStatus === OFFER_STATUS.ACCEPTED) {
+      throw new Error('Offer already accepted');
+    }
+
+    await this.contractRepository
+      .createQueryBuilder()
+      .update(ContractEntity)
+      .set({
+        offerStatus: OFFER_STATUS.ACCEPTED,
+      })
+      .where('id = :id', { id })
+      .execute();
+
+    return true;
+  }
+
+  /**
+   * Accepts an offer with the specified ID for the given freelancer user.
+   * @param id The ID of the offer to accept.
+   * @param userId The ID of the freelancer user accepting the offer.
+   * @returns A Promise that resolves to `true` if the offer was successfully accepted.
+   * @throws If the offer is not found or has already been accepted.
+   */
+  async rejectOffer(id: string, userId: string) {
+    const offer = await this.contractRepository.findOne({
+      where: { id, freelancerId: userId },
+    });
+
+    if (!offer) {
+      throw new Error('Offer not found');
+    }
+
+    if (offer.offerStatus === OFFER_STATUS.ACCEPTED) {
+      throw new Error('Offer already accepted');
+    }
+
+    await this.contractRepository
+      .createQueryBuilder()
+      .update(OfferEntity)
+      .set({
+        status: OFFER_STATUS.REJECTED,
+      })
+      .where('id = :id', { id })
+      .execute();
+
+    return true;
+  }
+
   create(input: CreateContractDto) {
     return 'This action adds a new contract';
   }
 
-  findAll() {
-    return `This action returns all contract`;
+  findAll(userId: string) {
+    return this.contractRepository.find({
+      where: [
+        {
+          createdBy: userId,
+        },
+        {
+          freelancerId: userId,
+        },
+      ],
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} contract`;
+  findOne(id: string, userId: string) {
+    return this.contractRepository.findOne({
+      where: [
+        {
+          id,
+          createdBy: userId,
+        },
+        {
+          id,
+          freelancerId: userId,
+        },
+      ],
+    });
   }
 
-  update(id: number, updateContractDto: UpdateContractDto) {
+  update(id: string, updateContractDto: UpdateContractDto, userId: string) {
     return `This action updates a #${id} contract`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} contract`;
+  remove(id: string, userId: string) {
+    // return `This action removes a #${id} contract`;
+  }
+
+  private async getContract(contractId: string, userId: string) {
+    const contract = await this.contractRepository.findOne({
+      where: { id: contractId },
+    });
+
+    if (!contract) {
+      throw new Error('Contract not found');
+    }
+
+    if (contract.createdBy !== userId) {
+      throw new Error('You are not the owner of this contract');
+    }
+
+    if (contract.payStatus === PAY_STATUS.PAID) {
+      throw new Error('Contract is already paid');
+    }
+
+    if (contract.offerStatus !== OFFER_STATUS.ACCEPTED) {
+      throw new Error('Offer is not accepted');
+    }
+
+    return contract;
   }
 }

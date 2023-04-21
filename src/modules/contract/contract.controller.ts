@@ -13,7 +13,9 @@ import { UpdateContractDto } from './dto/update-contract.dto';
 import { ContractPaymentIntentDto } from './dto/contract-payment-intent.dto';
 import { Auth, AuthUser } from '@app/core';
 import { ConfirmPaymentIntentDto } from '../../../libs/payment/src';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Contract')
 @Controller('contract')
 export class ContractController {
   constructor(private readonly contractService: ContractService) {}
@@ -54,25 +56,30 @@ export class ContractController {
   }
 
   @Get()
-  findAll() {
-    return this.contractService.findAll();
+  @Auth()
+  findAll(@AuthUser('id') userId: string) {
+    return this.contractService.findAll(userId);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.contractService.findOne(+id);
+  @Auth()
+  findOne(@Param('id') id: string, @AuthUser('id') userId: string) {
+    return this.contractService.findOne(id, userId);
   }
 
   @Patch(':id')
+  // @Auth()
   update(
     @Param('id') id: string,
     @Body() updateContractDto: UpdateContractDto,
+    @AuthUser('id') userId: string,
   ) {
-    return this.contractService.update(+id, updateContractDto);
+    return this.contractService.update(id, updateContractDto, userId);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.contractService.remove(+id);
+  @Auth()
+  remove(@Param('id') id: string, @AuthUser('id') userId: string) {
+    return this.contractService.remove(id, userId);
   }
 }

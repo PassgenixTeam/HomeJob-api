@@ -1,5 +1,5 @@
 import { BaseEntity } from '@app/common';
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import {
   CONTRACT_STATUS,
   OFFER_STATUS,
@@ -7,6 +7,7 @@ import {
   PAY_TYPE,
 } from '../enums/contract.enum';
 import { UserEntity } from '../../user/entities/user.entity';
+import { ProjectMilestoneEntity } from '../../project-milestone/entities/project-milestone.entity';
 
 @Entity({ name: 'contracts' })
 export class ContractEntity extends BaseEntity {
@@ -54,4 +55,7 @@ export class ContractEntity extends BaseEntity {
   @ManyToOne(() => UserEntity, (user) => user.contract)
   @JoinColumn({ name: 'freelancer_id' })
   freelancer: UserEntity;
+
+  @OneToMany(() => ProjectMilestoneEntity, (milestone) => milestone.contract)
+  projectMilestones: ProjectMilestoneEntity[];
 }

@@ -19,10 +19,3 @@ export enum OFFER_STATUS {
   ACCEPTED = 'accepted',
   REJECTED = 'rejected',
 }
-
-export enum MILESTONE_STATUS {
-  PENDING = 'pending',
-  PAID = 'paid',
-  COMPLETED = 'completed',
-  CANCELLED = 'cancelled',
-}

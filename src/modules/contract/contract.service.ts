@@ -238,18 +238,27 @@ export class ContractService {
   }
 
   findOne(id: string, userId: string) {
-    return this.contractRepository.findOne({
-      where: [
-        {
-          id,
-          createdBy: userId,
-        },
-        {
-          id,
-          freelancerId: userId,
-        },
-      ],
-    });
+    // return this.contractRepository.findOne({
+    //   where: [
+    //     {
+    //       id,
+    //       createdBy: userId,
+    //     },
+    //     {
+    //       id,
+    //       freelancerId: userId,
+    //     },
+    //   ],
+    // });
+
+    return this.contractRepository
+      .createQueryBuilder('contract')
+      .leftJoinAndSelect('contract.projectMilestones', 'projectMilestones')
+      .where(' id = :id AND (createdBy = :userId OR freelancerId = :userId)', {
+        id,
+        userId,
+      })
+      .getOne();
   }
 
   update(id: string, updateContractDto: UpdateContractDto, userId: string) {

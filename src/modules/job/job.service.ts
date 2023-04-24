@@ -118,6 +118,10 @@ export class JobService {
       .where('job.id = :id', { id })
       .getOne();
 
+    if (!job) {
+      throw new Error('Job not found');
+    }
+
     const result: JobEntity = {
       ...job,
       skills: job.mappingJobSkill.map((mapping) => {

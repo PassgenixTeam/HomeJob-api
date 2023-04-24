@@ -5,6 +5,9 @@ import { Type } from 'class-transformer';
 
 export class MilestoneDto {
   @ApiProperty({ type: String })
+  title: string;
+
+  @ApiProperty({ type: String })
   description: string;
 
   @ApiProperty({ type: Date, format: 'date' })
@@ -18,6 +21,10 @@ export class CreateContractDto {
   @ApiProperty({ type: String, format: 'uuid' })
   @IsNotEmpty()
   jobId: string;
+
+  @ApiProperty({ type: String, format: 'uuid' })
+  @IsNotEmpty()
+  freelancerId: string;
 
   @ApiProperty({ type: String, enum: PAY_TYPE })
   @IsNotEmpty()
@@ -33,7 +40,7 @@ export class CreateContractDto {
   @ApiProperty({ type: MilestoneDto })
   @ValidateNested({ each: true })
   @Type(() => MilestoneDto)
-  projectMilestones: MilestoneDto;
+  projectMilestones: MilestoneDto[];
 
   @ApiProperty({ type: Number })
   deposit: number;

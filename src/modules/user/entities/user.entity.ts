@@ -12,7 +12,6 @@ import { ProjectEntity } from '../../project/entities/project.entity';
 import { ExperienceEntity } from '../../experience/entities/experience.entity';
 import { MappingUserSkillEntity } from '../../mapping-user-skill/entities/mapping-user-skill.entity';
 import { MappingUserLanguageEntity } from '../../mapping-user-language/entities/mapping-user-language.entity';
-import { OfferEntity } from '../../offer/entities/offer.entity';
 import { ContractEntity } from '../../contract/entities/contract.entity';
 
 @Entity({ name: 'users' })
@@ -127,11 +126,6 @@ export class UserEntity extends BaseEntity {
     },
   )
   mappingUserSkill: MappingUserSkillEntity[];
-
-  @OneToMany(() => OfferEntity, (offer) => offer.freelancer, {
-    onDelete: 'CASCADE',
-  })
-  offers: OfferEntity[];
 
   @OneToMany(() => ContractEntity, (contract) => contract.freelancer, {
     onDelete: 'CASCADE',

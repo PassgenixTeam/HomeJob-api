@@ -11,7 +11,9 @@ import { ProjectMilestoneService } from './project-milestone.service';
 import { CreateProjectMilestoneDto } from './dto/create-project-milestone.dto';
 import { UpdateProjectMilestoneDto } from './dto/update-project-milestone.dto';
 import { Auth, AuthUser } from '@app/core';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Project Milestone')
 @Controller('project-milestone')
 export class ProjectMilestoneController {
   constructor(

@@ -22,3 +22,8 @@ export enum JOB_STATUS {
   PENDING = 'pending',
   PUBLIC = 'public',
 }
+
+export enum JOB_TYPE {
+  HOURLY = 'hourly',
+  FIXED = 'fixed',
+}

@@ -1,4 +1,5 @@
 export enum CONTRACT_STATUS {
+  PENDING = 'pending',
   STARTED = 'started',
   COMPLETED = 'completed',
   CANCELLED = 'cancelled',

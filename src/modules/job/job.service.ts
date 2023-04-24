@@ -10,7 +10,7 @@ import { differenceMultiArray, isJson, removeKeyUndefined } from '@app/common';
 import { FileEntity } from '../file/entities/file.entity';
 import { FileQueue } from '../file/queues/file.queue';
 import _ from 'lodash';
-import { JOB_STATUS } from './enums/job.enum';
+import { JOB_STATUS, JOB_TYPE } from './enums/job.enum';
 @Injectable()
 export class JobService {
   constructor(
@@ -39,6 +39,17 @@ export class JobService {
 
       if (!input.status) {
         input.status = JOB_STATUS.DRAFT;
+      }
+
+      const jobInstance = plainToInstance(JobEntity, input);
+
+      if (jobInstance.budget) {
+        jobInstance.jobType = JOB_TYPE.FIXED;
+        jobInstance.hourlyTo = null;
+        jobInstance.hourlyFrom = null;
+      } else {
+        jobInstance.jobType = JOB_TYPE.HOURLY;
+        jobInstance.budget = null;
       }
 
       const job = await queryRunner.manager.save<JobEntity>(
@@ -143,6 +154,15 @@ export class JobService {
 
     try {
       const jobInstance = plainToInstance(JobEntity, input);
+
+      if (jobInstance.budget) {
+        jobInstance.jobType = JOB_TYPE.FIXED;
+        jobInstance.hourlyTo = null;
+        jobInstance.hourlyFrom = null;
+      } else {
+        jobInstance.jobType = JOB_TYPE.HOURLY;
+        jobInstance.budget = null;
+      }
 
       jobInstance.createdBy = userId;
 

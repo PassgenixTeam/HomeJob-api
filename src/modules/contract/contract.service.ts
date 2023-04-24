@@ -8,19 +8,30 @@ import {
   ConfirmPaymentIntentDto,
   StripeService,
 } from '../../../libs/payment/src';
-import { OfferEntity } from '../offer/entities/offer.entity';
 import { ContractPaymentIntentDto } from './dto/contract-payment-intent.dto';
-import { OFFER_STATUS, PAY_TYPE } from '../offer/enums/offer.enum';
-import { MilestoneDto } from '../proposal/dto/create-proposal.dto';
-import { CONTRACT_STATUS, PAY_STATUS } from './enums/contract.enum';
+import {
+  CONTRACT_STATUS,
+  OFFER_STATUS,
+  PAY_STATUS,
+  PAY_TYPE,
+} from './enums/contract.enum';
 import { TransactionService } from '../transaction/transaction.service';
 import { TYPE_PAYMENT_METHOD } from '../transaction/enums/transaction.enum';
+import { JobEntity } from '../job/entities/job.entity';
+import { plainToInstance } from 'class-transformer';
+import { ProjectMilestoneEntity } from '../project-milestone/entities/project-milestone.entity';
+import { UserEntity } from '../user/entities/user.entity';
+import { ROLE } from '../../../libs/common/src';
 
 @Injectable()
 export class ContractService {
   constructor(
     @InjectRepository(ContractEntity)
     private readonly contractRepository: Repository<ContractEntity>,
+    @InjectRepository(JobEntity)
+    private readonly jobRepository: Repository<JobEntity>,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
     private readonly stripeService: StripeService,
     private readonly dataSource: DataSource,
     private readonly transactionService: TransactionService,
@@ -210,9 +221,9 @@ export class ContractService {
 
     await this.contractRepository
       .createQueryBuilder()
-      .update(OfferEntity)
+      .update(ContractEntity)
       .set({
-        status: OFFER_STATUS.REJECTED,
+        offerStatus: OFFER_STATUS.REJECTED,
       })
       .where('id = :id', { id })
       .execute();
@@ -220,8 +231,57 @@ export class ContractService {
     return true;
   }
 
-  create(input: CreateContractDto) {
-    return 'This action adds a new contract';
+  async create(input: CreateContractDto, userId: string) {
+    const { jobId, payType, dueDate, projectMilestones, freelancerId } = input;
+
+    const freelancer = await this.userRepository.findOne({
+      where: { id: freelancerId, role: ROLE.FREELANCE },
+      select: ['id', 'stripeCustomerId'],
+    });
+
+    if (!freelancer) {
+      throw new Error('Freelancer not found');
+    }
+
+    const job = await this.jobRepository.findOne({
+      where: { id: jobId },
+      select: ['id', 'createdBy'],
+    });
+
+    if (!job) {
+      throw new Error('Job not found');
+    }
+
+    if (job.createdBy !== userId) {
+      throw new Error('You are not the owner of this job');
+    }
+
+    const contractInstance = plainToInstance(ContractEntity, input);
+
+    contractInstance.createdBy = userId;
+
+    if (payType === 'FIXED_PRICE') {
+      contractInstance.projectMilestones = null;
+    } else {
+      contractInstance.payFixedPrice = null;
+    }
+
+    if (dueDate) {
+      contractInstance.dueDate = new Date(dueDate);
+    }
+
+    if (projectMilestones) {
+      contractInstance.projectMilestones = plainToInstance(
+        ProjectMilestoneEntity,
+        projectMilestones,
+      );
+    }
+
+    contractInstance.status = CONTRACT_STATUS.PENDING;
+
+    const contract = await this.contractRepository.save(contractInstance);
+
+    return contract;
   }
 
   findAll(userId: string) {

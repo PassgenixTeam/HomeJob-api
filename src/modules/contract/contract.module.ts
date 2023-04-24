@@ -5,12 +5,13 @@ import { StripeService } from '../../../libs/payment/src';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ContractEntity } from './entities/contract.entity';
 import { TransactionModule } from '../transaction/transaction.module';
-import { OfferEntity } from '../offer/entities/offer.entity';
+import { JobEntity } from '../job/entities/job.entity';
+import { UserEntity } from '../user/entities/user.entity';
 
 @Module({
   imports: [
     TransactionModule,
-    TypeOrmModule.forFeature([ContractEntity, OfferEntity]),
+    TypeOrmModule.forFeature([ContractEntity, JobEntity, UserEntity]),
   ],
   controllers: [ContractController],
   providers: [ContractService, StripeService],

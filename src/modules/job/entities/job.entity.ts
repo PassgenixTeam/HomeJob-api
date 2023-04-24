@@ -6,6 +6,7 @@ import { SubSkillEntity } from '../../sub-skill/entities/sub-skill.entity';
 import {
   EXPERIENCE_LEVEL,
   JOB_STATUS,
+  JOB_TYPE,
   PROJECT_LENGTH,
   SCOPE_TYPE,
 } from '../enums/job.enum';
@@ -13,37 +14,40 @@ import { ProposalEntity } from '../../proposal/entities/proposal.entity';
 
 @Entity({ name: 'jobs' })
 export class JobEntity extends BaseEntity {
-  @Column()
+  @Column({ type: 'varchar', length: 255 })
   title: string;
 
   @Column({ nullable: true })
   subtitle: string;
 
-  @Column()
+  @Column({ type: 'text' })
   description: string;
 
-  @Column()
+  @Column({ type: 'enum', enum: SCOPE_TYPE })
   scopeType: SCOPE_TYPE;
 
-  @Column()
+  @Column({ type: 'enum', enum: EXPERIENCE_LEVEL })
   experienceLevel: EXPERIENCE_LEVEL;
 
-  @Column()
+  @Column({ type: 'enum', enum: PROJECT_LENGTH })
   projectLength: PROJECT_LENGTH;
 
-  @Column()
+  @Column({ type: 'float', nullable: true })
   budget: number;
 
-  @Column()
+  @Column({ type: 'integer', nullable: true })
   hourlyTo: number;
 
-  @Column()
+  @Column({ type: 'integer', nullable: true })
   hourlyFrom: number;
 
-  @Column()
+  @Column({ type: 'text' })
   attachments: string;
 
-  @Column()
+  @Column({ type: 'enum', enum: JOB_STATUS })
+  jobType: JOB_TYPE;
+
+  @Column({ type: 'enum', enum: JOB_STATUS })
   status: JOB_STATUS;
 
   @OneToMany(

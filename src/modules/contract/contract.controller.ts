@@ -21,8 +21,9 @@ export class ContractController {
   constructor(private readonly contractService: ContractService) {}
 
   @Post()
-  create(@Body() createContractDto: CreateContractDto) {
-    return this.contractService.create(createContractDto);
+  @Auth()
+  create(@Body() input: CreateContractDto, @AuthUser('id') userId: string) {
+    return this.contractService.create(input, userId);
   }
 
   @Post('create-payment-intent')

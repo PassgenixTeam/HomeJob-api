@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   EXPERIENCE_LEVEL,
   JOB_STATUS,
+  JOB_TYPE,
   PROJECT_LENGTH,
   SCOPE_TYPE,
 } from '../enums/job.enum';

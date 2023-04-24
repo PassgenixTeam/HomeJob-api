@@ -44,7 +44,7 @@ export class JobEntity extends BaseEntity {
   @Column({ type: 'text' })
   attachments: string;
 
-  @Column({ type: 'enum', enum: JOB_STATUS })
+  @Column({ type: 'enum', enum: JOB_TYPE })
   jobType: JOB_TYPE;
 
   @Column({ type: 'enum', enum: JOB_STATUS })

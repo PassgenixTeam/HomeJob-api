@@ -54,7 +54,7 @@ export class JobService {
 
       const job = await queryRunner.manager.save<JobEntity>(
         plainToInstance(JobEntity, {
-          ...input,
+          ...jobInstance,
           createdBy: userId,
           attachments: JSON.stringify(
             attachments.map((file) => {

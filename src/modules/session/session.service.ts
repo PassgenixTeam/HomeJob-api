@@ -7,6 +7,11 @@ import { SessionEntity } from './entities/session.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository, UpdateResult } from 'typeorm';
 import { RedisService } from '../../../libs/core/src/cache/redis.service';
+import {
+  instanceToInstance,
+  instanceToPlain,
+  plainToInstance,
+} from 'class-transformer';
 
 @Injectable()
 export class SessionService {
@@ -53,7 +58,7 @@ export class SessionService {
     });
 
     if (session) {
-      const user = session.user;
+      const user = instanceToPlain(session.user);
 
       delete user.password;
       delete session.user;

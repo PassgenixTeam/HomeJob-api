@@ -23,6 +23,8 @@
     "migration:run": "yarn run typeorm migration:run -d src/database/ormconfig.ts",
     "migration:revert": "yarn run typeorm migration:revert -d src/database/ormconfig.ts",
     "seed:run": "yarn run typeorm migration:run -d src/database/seed.config.ts",
+    "database:init": "yarn migration:generate && yarn migration:run && yarn seed:run",
+    "migration:auto": "yarn migration:generate && yarn migration:run",
     "prepare": "husky install"
   },
   "dependencies": {

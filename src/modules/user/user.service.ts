@@ -1,10 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ERROR, ROLE, removeKeyUndefined } from '@app/common';
+import {
+  ERROR,
+  ROLE,
+  ResponseTransform,
+  removeKeyUndefined,
+} from '@app/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
-import { plainToInstance } from 'class-transformer';
+import { instanceToPlain, plainToInstance } from 'class-transformer';
 import { RoleDto } from './dto/role.dto';
 import { RedisService } from '../../../libs/core/src';
 
@@ -19,7 +24,7 @@ export class UserService {
   async me(user: UserEntity) {
     delete user.loginSession;
     delete user.cacheId;
-    return user;
+    return instanceToPlain(user);
   }
 
   async profile(user: UserEntity) {
@@ -40,7 +45,7 @@ export class UserService {
       .where('user.id = :id', { id: user.id })
       .getOne();
 
-    return userEntity;
+    return instanceToPlain(userEntity);
   }
 
   findAll() {
@@ -48,12 +53,35 @@ export class UserService {
     throw new Error(ERROR.CanNotCreateUser.toString());
   }
 
-  update(id: string, input: UpdateUserDto) {
-    const user = plainToInstance(UserEntity, input);
+  async update(id: string, input: UpdateUserDto) {
+    console.log(input);
 
-    removeKeyUndefined(user);
+    const userInstance = plainToInstance(UserEntity, input);
 
-    return this.usersRepository.update(id, user);
+    delete userInstance.role;
+    delete userInstance.password;
+    delete userInstance.loginSession;
+    delete userInstance.cacheId;
+    delete userInstance.email;
+    delete userInstance.isActive;
+    delete userInstance.stripeCustomerId;
+
+    removeKeyUndefined(userInstance);
+
+    console.log(userInstance);
+
+    const userUpdate = await this.usersRepository.update(id, userInstance);
+
+    if (userUpdate.affected < 1) {
+      throw new Error("Can't update user");
+    }
+
+    await this.redisService.update(
+      userInstance.cacheId,
+      JSON.stringify(userInstance),
+    );
+
+    return 'Update success';
   }
 
   remove(id: number) {
@@ -62,9 +90,7 @@ export class UserService {
 
   async role(role: ROLE, user: UserEntity) {
     if (user.role) {
-      delete user.loginSession;
-      delete user.cacheId;
-      return user;
+      return this.me(user);
     }
 
     await this.usersRepository.update(user.id, { role: role });
@@ -73,9 +99,6 @@ export class UserService {
 
     await this.redisService.update(user.cacheId, JSON.stringify(user));
 
-    delete user.loginSession;
-    delete user.cacheId;
-
-    return user;
+    return this.me(user);
   }
 }

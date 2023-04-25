@@ -41,12 +41,14 @@ export class UserController {
     return this.userService.profile(user);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(id, updateUserDto);
+  @Patch('profile')
+  @Auth()
+  update(@Body() updateUserDto: UpdateUserDto, @AuthUser('id') userId: string) {
+    return this.userService.update(userId, updateUserDto);
   }
 
   @Delete(':id')
+  @Auth()
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);
   }

@@ -1,7 +1,7 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import { AfterInsert, AfterUpdate, Column, Entity, OneToMany } from 'typeorm';
 import { SessionEntity } from '../../session/entities/session.entity';
 import { BaseEntity, ROLE } from '@app/common';
-import { Expose } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import { PaymentMethodEntity } from '../../payment-method/entities/payment-method.entity';
 import { TransactionEntity } from '../../transaction/entities/transaction.entity';
 import { CoinEntity } from '../../coin/entities/coin.entity';
@@ -13,59 +13,64 @@ import { ExperienceEntity } from '../../experience/entities/experience.entity';
 import { MappingUserSkillEntity } from '../../mapping-user-skill/entities/mapping-user-skill.entity';
 import { MappingUserLanguageEntity } from '../../mapping-user-language/entities/mapping-user-language.entity';
 import { ContractEntity } from '../../contract/entities/contract.entity';
+import { HOURS_PER_WEEK } from 'src/modules/user/enums/user.enum';
+import { VideoOverview } from 'src/modules/user/dto/create-user.dto';
+import { isJSON } from 'class-validator';
 
 @Entity({ name: 'users' })
 export class UserEntity extends BaseEntity {
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   password: string;
 
-  @Column({ unique: true })
+  @Column({ type: 'varchar', length: 100, unique: true })
   email: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 50 })
   firstName: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 50 })
   lastName: string;
 
   @Column({
+    type: 'varchar',
+    length: 255,
     default:
       // eslint-disable-next-line max-len
       'https://media.istockphoto.com/id/1016744004/vector/profile-placeholder-image-gray-silhouette-no-photo.jpg?s=612x612&w=0&k=20&c=mB6A9idhtEtsFXphs1WVwW_iPBt37S2kJp6VpPhFeoA=',
   })
   avatarUrl: string;
 
-  @Column({ default: false })
+  @Column({ type: 'boolean', default: false })
   isActive: boolean;
 
   @OneToMany(() => SessionEntity, (session) => session.user)
   sessions: SessionEntity[];
 
-  @Column({ nullable: true })
+  @Column({ type: 'enum', enum: ROLE, nullable: true })
   role: ROLE;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', length: 50, nullable: true })
   stripeCustomerId: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   address: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', length: 20, nullable: true })
   city: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', length: 20, nullable: true })
   country: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', length: 50, nullable: true })
   line1: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', length: 50, nullable: true })
   line2: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', length: 20, nullable: true })
   phone: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', length: 50, nullable: true })
   state: string;
 
   @Column({ default: 0, type: 'float' })
@@ -73,6 +78,29 @@ export class UserEntity extends BaseEntity {
 
   @Column({ default: 0, type: 'float' })
   coin: number;
+
+  @Column({ type: 'varchar', length: 70, nullable: true })
+  title: string;
+
+  @Column({ type: 'float', default: 0 })
+  hourlyRate: string;
+
+  @Column({ type: 'text', nullable: true })
+  overview: string;
+
+  @Column({ type: 'varchar', length: 500, nullable: true })
+  @Transform(
+    ({ value }) => {
+      if (typeof value === 'string' && isJSON(value)) return JSON.parse(value);
+    },
+    {
+      toPlainOnly: true,
+    },
+  )
+  videoOverview: VideoOverview;
+
+  @Column({ type: 'enum', enum: HOURS_PER_WEEK, nullable: true })
+  hoursPerWeek: HOURS_PER_WEEK;
 
   @Column()
   loginBy: string;
@@ -139,4 +167,12 @@ export class UserEntity extends BaseEntity {
 
   @Expose()
   cacheId: string;
+
+  // ----------------- Methods -----------------
+  @AfterInsert()
+  @AfterUpdate()
+  async afterInsert() {
+    if (!this.videoOverview) return;
+    this.videoOverview = JSON.stringify(this.videoOverview) as any;
+  }
 }

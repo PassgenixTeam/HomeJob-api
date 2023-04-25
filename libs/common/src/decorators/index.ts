@@ -7,3 +7,4 @@ export * from './non-empty-transform/non-empty-transform.decorator';
 export * from './pagination/pagination.decorator';
 export * from './pagination/pagination.model';
 export * from './transactional/transactional.decorator';
+export * from './response-transform/response-transform.decorator';

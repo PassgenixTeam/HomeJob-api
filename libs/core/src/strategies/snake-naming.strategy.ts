@@ -11,18 +11,20 @@ export class SnakeNamingStrategy
     customName: string,
     embeddedPrefixes: string[],
   ): string {
-    return snakeCase(
+    const snakeCased = snakeCase(
       embeddedPrefixes.concat(customName || propertyName).join('_'),
     );
-  }
-
-  tableName(targetName: string, userSpecifiedName: string): string {
-    return userSpecifiedName ? userSpecifiedName : snakeCase(targetName);
+    return snakeCased.startsWith('_') ? snakeCased.substring(1) : snakeCased;
   }
 
   // Convert camelCase to snake_case
   relationName(propertyName: string): string {
-    return snakeCase(propertyName);
+    const snakeCased = snakeCase(propertyName);
+    return snakeCased.startsWith('_') ? snakeCased.substring(1) : snakeCased;
+  }
+
+  tableName(targetName: string, userSpecifiedName: string): string {
+    return userSpecifiedName ? userSpecifiedName : snakeCase(targetName);
   }
 
   // Convert camelCase to snake_case

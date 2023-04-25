@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class migration1681976413024 implements MigrationInterface {
-  name = 'migration1681976413024';
+export class migration1682432021722 implements MigrationInterface {
+  name = 'migration1682432021722';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -26,7 +26,7 @@ export class migration1681976413024 implements MigrationInterface {
       `CREATE TABLE "mapping_job_skills" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "created_by" uuid, "updated_by" uuid, "deleted_at" TIMESTAMP, "deleted_by" uuid, "job_id" uuid NOT NULL, "skill_id" uuid NOT NULL, CONSTRAINT "PK_e79f7520e4139703c27c70b6b1e" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "jobs" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "created_by" uuid, "updated_by" uuid, "deleted_at" TIMESTAMP, "deleted_by" uuid, "title" character varying NOT NULL, "subtitle" character varying, "description" character varying NOT NULL, "scope_type" character varying NOT NULL, "experience_level" character varying NOT NULL, "project_length" character varying NOT NULL, "budget" integer NOT NULL, "hourly_to" integer NOT NULL, "hourly_from" integer NOT NULL, "attachments" character varying NOT NULL, "status" character varying NOT NULL, CONSTRAINT "PK_cf0a6c42b72fcc7f7c237def345" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "jobs" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "created_by" uuid, "updated_by" uuid, "deleted_at" TIMESTAMP, "deleted_by" uuid, "title" character varying(255) NOT NULL, "subtitle" character varying, "description" text NOT NULL, "scope_type" "public"."jobs_scope_type_enum" NOT NULL, "experience_level" "public"."jobs_experience_level_enum" NOT NULL, "project_length" "public"."jobs_project_length_enum" NOT NULL, "budget" double precision, "hourly_to" integer, "hourly_from" integer, "attachments" text NOT NULL, "job_type" "public"."jobs_job_type_enum" NOT NULL, "status" "public"."jobs_status_enum" NOT NULL, CONSTRAINT "PK_cf0a6c42b72fcc7f7c237def345" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "proposals" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "created_by" uuid, "updated_by" uuid, "deleted_at" TIMESTAMP, "deleted_by" uuid, "job_id" uuid NOT NULL, "paid_type" character varying NOT NULL, "amount" integer NOT NULL, "milestones" character varying NOT NULL, "project_long" character varying NOT NULL, "cover_letter" character varying NOT NULL, "attachments" character varying NOT NULL, "boost_coin" integer NOT NULL, "boost_time" TIMESTAMP NOT NULL, CONSTRAINT "PK_db524c8db8e126a38a2f16d8cac" PRIMARY KEY ("id"))`,
@@ -50,19 +50,25 @@ export class migration1681976413024 implements MigrationInterface {
       `CREATE TABLE "mapping_user_languages" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "created_by" uuid, "updated_by" uuid, "deleted_at" TIMESTAMP, "deleted_by" uuid, "user_id" uuid NOT NULL, "language_id" uuid NOT NULL, "level" character varying NOT NULL, CONSTRAINT "PK_33ebf5e62c70e022287aacb8c84" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "users" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "created_by" uuid, "updated_by" uuid, "deleted_at" TIMESTAMP, "deleted_by" uuid, "password" character varying, "email" character varying NOT NULL, "first_name" character varying NOT NULL, "last_name" character varying NOT NULL, "avatar_url" character varying NOT NULL DEFAULT 'https://media.istockphoto.com/id/1016744004/vector/profile-placeholder-image-gray-silhouette-no-photo.jpg?s=612x612&w=0&k=20&c=mB6A9idhtEtsFXphs1WVwW_iPBt37S2kJp6VpPhFeoA=', "is_active" boolean NOT NULL DEFAULT false, "role" character varying, "stripe_customer_id" character varying, "address" character varying, "city" character varying, "country" character varying, "line_1" character varying, "line_2" character varying, "phone" character varying, "state" character varying, "balance" double precision NOT NULL DEFAULT '0', "coin" double precision NOT NULL DEFAULT '0', "login_by" character varying NOT NULL, CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3" UNIQUE ("email"), CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "project_milestones" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "created_by" uuid, "updated_by" uuid, "deleted_at" TIMESTAMP, "deleted_by" uuid, "title" character varying(255) NOT NULL, "description" character varying(1000) NOT NULL, "amount" double precision NOT NULL, "due_date" TIMESTAMP WITH TIME ZONE NOT NULL, "contract_id" uuid NOT NULL, "is_paid" boolean NOT NULL DEFAULT false, "freelancer_confirm_status" "public"."project_milestones_freelancer_confirm_status_enum" NOT NULL DEFAULT 'pending', "status" "public"."project_milestones_status_enum" NOT NULL, CONSTRAINT "PK_0c561300a12c6ba3ad793dff4b8" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
+      `CREATE TABLE "contracts" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "created_by" uuid, "updated_by" uuid, "deleted_at" TIMESTAMP, "deleted_by" uuid, "contract_id" uuid NOT NULL, "freelancer_id" uuid NOT NULL, "job_id" uuid NOT NULL, "pay_type" "public"."contracts_pay_type_enum" NOT NULL, "due_date" TIMESTAMP WITH TIME ZONE, "pay_fixed_price" double precision, "offer_status" "public"."contracts_offer_status_enum" NOT NULL, "deposit" double precision NOT NULL, "fee" double precision, "taxes" double precision, "total" double precision, "pay_status" "public"."contracts_pay_status_enum" NOT NULL, "status" "public"."contracts_status_enum" NOT NULL, CONSTRAINT "PK_2c7b8f3a7b1acdd49497d83d0fb" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
+      `CREATE TABLE "users" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "created_by" uuid, "updated_by" uuid, "deleted_at" TIMESTAMP, "deleted_by" uuid, "password" character varying(255), "email" character varying(100) NOT NULL, "first_name" character varying(50) NOT NULL, "last_name" character varying(50) NOT NULL, "avatar_url" character varying(255) NOT NULL DEFAULT 'https://media.istockphoto.com/id/1016744004/vector/profile-placeholder-image-gray-silhouette-no-photo.jpg?s=612x612&w=0&k=20&c=mB6A9idhtEtsFXphs1WVwW_iPBt37S2kJp6VpPhFeoA=', "is_active" boolean NOT NULL DEFAULT false, "role" "public"."users_role_enum", "stripe_customer_id" character varying(50), "address" character varying(255), "city" character varying(20), "country" character varying(20), "line_1" character varying(50), "line_2" character varying(50), "phone" character varying(20), "state" character varying(50), "balance" double precision NOT NULL DEFAULT '0', "coin" double precision NOT NULL DEFAULT '0', "title" character varying(70), "hourly_rate" double precision NOT NULL DEFAULT '0', "overview" text, "video_overview" character varying(500), "hours_per_week" "public"."users_hours_per_week_enum", "login_by" character varying NOT NULL, CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3" UNIQUE ("email"), CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "sessions" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "created_by" uuid, "updated_by" uuid, "deleted_at" TIMESTAMP, "deleted_by" uuid, "access_token" character varying NOT NULL, "refresh_token" character varying NOT NULL, "expired_at" TIMESTAMP, "user_id" uuid, CONSTRAINT "PK_3238ef96f18b355b671619111bc" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
+      `CREATE TABLE "files" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "created_by" uuid, "updated_by" uuid, "deleted_at" TIMESTAMP, "deleted_by" uuid, "type" character varying NOT NULL, "size" integer NOT NULL, "url" character varying NOT NULL, "key" character varying NOT NULL, "status" "public"."files_status_enum" NOT NULL, CONSTRAINT "PK_6c16b9093a142e0e7613b04a3d9" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "sub_categories" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "created_by" uuid, "updated_by" uuid, "deleted_at" TIMESTAMP, "deleted_by" uuid, "name" character varying NOT NULL, "category_id" uuid NOT NULL, CONSTRAINT "PK_f319b046685c0e07287e76c5ab1" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "categories" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "created_by" uuid, "updated_by" uuid, "deleted_at" TIMESTAMP, "deleted_by" uuid, "name" character varying NOT NULL, CONSTRAINT "PK_24dbc6126a28ff948da33e97d3b" PRIMARY KEY ("id"))`,
-    );
-    await queryRunner.query(
-      `CREATE TABLE "files" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "created_by" uuid, "updated_by" uuid, "deleted_at" TIMESTAMP, "deleted_by" uuid, "type" character varying NOT NULL, "size" integer NOT NULL, "url" character varying NOT NULL, "key" character varying NOT NULL, "status" "public"."files_status_enum" NOT NULL, CONSTRAINT "PK_6c16b9093a142e0e7613b04a3d9" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `ALTER TABLE "transaction" ADD CONSTRAINT "FK_25b1234bd0af272d259fe5e38de" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
@@ -116,6 +122,12 @@ export class migration1681976413024 implements MigrationInterface {
       `ALTER TABLE "mapping_user_languages" ADD CONSTRAINT "FK_1663b2dff75dbbe9486b1c20604" FOREIGN KEY ("language_id") REFERENCES "languages"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
+      `ALTER TABLE "project_milestones" ADD CONSTRAINT "FK_2b21da3b280a42e980f5ce717b0" FOREIGN KEY ("contract_id") REFERENCES "contracts"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "contracts" ADD CONSTRAINT "FK_a94ffd0b1a052fddaa84d4cb186" FOREIGN KEY ("freelancer_id") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
       `ALTER TABLE "sessions" ADD CONSTRAINT "FK_085d540d9f418cfbdc7bd55bb19" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
@@ -129,6 +141,12 @@ export class migration1681976413024 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "sessions" DROP CONSTRAINT "FK_085d540d9f418cfbdc7bd55bb19"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "contracts" DROP CONSTRAINT "FK_a94ffd0b1a052fddaa84d4cb186"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "project_milestones" DROP CONSTRAINT "FK_2b21da3b280a42e980f5ce717b0"`,
     );
     await queryRunner.query(
       `ALTER TABLE "mapping_user_languages" DROP CONSTRAINT "FK_1663b2dff75dbbe9486b1c20604"`,
@@ -181,11 +199,13 @@ export class migration1681976413024 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "transaction" DROP CONSTRAINT "FK_25b1234bd0af272d259fe5e38de"`,
     );
-    await queryRunner.query(`DROP TABLE "files"`);
     await queryRunner.query(`DROP TABLE "categories"`);
     await queryRunner.query(`DROP TABLE "sub_categories"`);
+    await queryRunner.query(`DROP TABLE "files"`);
     await queryRunner.query(`DROP TABLE "sessions"`);
     await queryRunner.query(`DROP TABLE "users"`);
+    await queryRunner.query(`DROP TABLE "contracts"`);
+    await queryRunner.query(`DROP TABLE "project_milestones"`);
     await queryRunner.query(`DROP TABLE "mapping_user_languages"`);
     await queryRunner.query(`DROP TABLE "languages"`);
     await queryRunner.query(`DROP TABLE "experiences"`);

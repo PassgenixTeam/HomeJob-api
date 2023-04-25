@@ -12,6 +12,7 @@ import { v4 as uuidV4 } from 'uuid';
 import { LoginSocialDto } from './dto/login-social.dto';
 import { UserSocial } from './interfaces/user-social.interface';
 import { LOGIN_BY } from '../user/enums/user.enum';
+import { instanceToPlain } from 'class-transformer';
 
 @Injectable()
 export class AuthService {
@@ -47,7 +48,7 @@ export class AuthService {
     });
 
     return {
-      user,
+      user: instanceToPlain(user),
       token: {
         accessToken,
         refreshToken,
@@ -90,7 +91,7 @@ export class AuthService {
     });
 
     return {
-      user,
+      user: instanceToPlain(user),
       token: {
         accessToken,
         refreshToken,
@@ -109,7 +110,7 @@ export class AuthService {
       throw new Error('Email is already exist');
     }
 
-    return this.usersRepository.save({
+    await this.usersRepository.save({
       email,
       password: sha512(password),
       firstName,
@@ -117,6 +118,8 @@ export class AuthService {
       country,
       loginBy: LOGIN_BY.EMAIL,
     });
+
+    return 'Register success';
   }
 
   createAccessToken(user: UserEntity): string {

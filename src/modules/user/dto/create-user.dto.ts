@@ -1,7 +1,13 @@
 import { EnumTransform } from '@app/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
-import { IsEmail, IsEnum, ValidateNested } from 'class-validator';
+import {
+  IsBoolean,
+  IsBooleanString,
+  IsEmail,
+  IsEnum,
+  ValidateNested,
+} from 'class-validator';
 import { HOURS_PER_WEEK } from 'src/modules/user/enums/user.enum';
 
 export class VideoOverview {
@@ -79,4 +85,8 @@ export class CreateUserDto {
   @IsEnum(HOURS_PER_WEEK)
   @EnumTransform(HOURS_PER_WEEK)
   hoursPerWeek: HOURS_PER_WEEK;
+
+  @ApiProperty({ type: Boolean, default: false })
+  @IsBoolean()
+  contractToHire: boolean;
 }

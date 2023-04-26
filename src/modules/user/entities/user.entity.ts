@@ -102,6 +102,9 @@ export class UserEntity extends BaseEntity {
   @Column({ type: 'enum', enum: HOURS_PER_WEEK, nullable: true })
   hoursPerWeek: HOURS_PER_WEEK;
 
+  @Column({ type: 'boolean', default: false })
+  contractToHire: boolean;
+
   @Column()
   loginBy: string;
 

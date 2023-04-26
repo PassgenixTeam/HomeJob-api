@@ -6,8 +6,8 @@ export enum LOGIN_BY {
 }
 
 export enum HOURS_PER_WEEK {
-  MORE_THAN_30H_PER_WEEK = 'more_than_30h_per_week',
-  LESS_THAN_30H_PER_WEEK = 'less_than_30h_per_week',
-  AS_NEED_OPEN_TO_OFFER = 'as_need_open_to_offer',
-  NONE = 'none',
+  MORE_THAN_30H_PER_WEEK = 'More than 30h per week',
+  LESS_THAN_30H_PER_WEEK = 'Less than 30h per week',
+  AS_NEED_OPEN_TO_OFFER = 'As need open to offer',
+  NONE = 'None',
 }

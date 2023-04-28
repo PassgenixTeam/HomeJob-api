@@ -1,16 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
-import {
-  ERROR,
-  ROLE,
-  ResponseTransform,
-  removeKeyUndefined,
-} from '@app/common';
+import { ERROR, ROLE, removeKeyUndefined } from '@app/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { instanceToPlain, plainToInstance } from 'class-transformer';
-import { RoleDto } from './dto/role.dto';
 import { RedisService } from '../../../libs/core/src';
 
 @Injectable()
@@ -54,8 +48,6 @@ export class UserService {
   }
 
   async update(id: string, input: UpdateUserDto) {
-    console.log(input);
-
     const userInstance = plainToInstance(UserEntity, input);
 
     delete userInstance.role;
@@ -66,9 +58,9 @@ export class UserService {
     delete userInstance.isActive;
     delete userInstance.stripeCustomerId;
 
-    removeKeyUndefined(userInstance);
+    userInstance.profileCompletion = 90;
 
-    console.log(userInstance);
+    removeKeyUndefined(userInstance);
 
     const userUpdate = await this.usersRepository.update(id, userInstance);
 

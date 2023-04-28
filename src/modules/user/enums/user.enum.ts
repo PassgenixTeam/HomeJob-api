@@ -11,3 +11,8 @@ export enum HOURS_PER_WEEK {
   AS_NEED_OPEN_TO_OFFER = 'As need open to offer',
   NONE = 'None',
 }
+
+export enum PROFILE_VISIBILITY {
+  PUBLIC = 'Public',
+  PRIVATE = 'Private',
+}

@@ -1,7 +1,9 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { BaseEntity } from '@app/common';
+import { BaseEntity, StringTransformObject } from '@app/common';
 import { JobEntity } from '../../job/entities/job.entity';
 import { UserEntity } from '../../user/entities/user.entity';
+import { Transform } from 'class-transformer';
+import { isJSON } from 'class-validator';
 
 @Entity({ name: 'proposals' })
 export class ProposalEntity extends BaseEntity {
@@ -15,6 +17,7 @@ export class ProposalEntity extends BaseEntity {
   amount: number;
 
   @Column()
+  @StringTransformObject()
   milestones: string;
 
   @Column()
@@ -24,6 +27,7 @@ export class ProposalEntity extends BaseEntity {
   coverLetter: string;
 
   @Column()
+  @StringTransformObject()
   attachments: string;
 
   @Column()

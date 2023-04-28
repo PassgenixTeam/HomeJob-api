@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { JobEntity } from './entities/job.entity';
 import { MappingJobSkillService } from '../mapping-job-skill/mapping-job-skill.service';
-import { plainToInstance } from 'class-transformer';
+import { instanceToPlain, plainToInstance } from 'class-transformer';
 import { differenceMultiArray, isJson, removeKeyUndefined } from '@app/common';
 import { FileEntity } from '../file/entities/file.entity';
 import { FileQueue } from '../file/queues/file.queue';
@@ -95,7 +95,7 @@ export class JobService {
       .leftJoinAndSelect('mappingJobSkill.skill', 'skill')
       .getMany();
 
-    const result = jobs.map(({ mappingJobSkill, ...job }) => {
+    const result = instanceToPlain(jobs).map(({ mappingJobSkill, ...job }) => {
       return {
         ...job,
         skills: mappingJobSkill.map((mapping) => {
@@ -110,7 +110,7 @@ export class JobService {
     return result;
   }
 
-  async findOne(id: string): Promise<JobEntity> {
+  async findOne(id: string) {
     const job = await this.jobRepository
       .createQueryBuilder('job')
       .leftJoinAndSelect('job.mappingJobSkill', 'mappingJobSkill')
@@ -122,15 +122,17 @@ export class JobService {
       throw new Error('Job not found');
     }
 
+    const jobPlain = instanceToPlain(job);
+
     const result: JobEntity = {
-      ...job,
-      skills: job.mappingJobSkill.map((mapping) => {
+      ...jobPlain,
+      skills: jobPlain.mappingJobSkill.map((mapping) => {
         return {
           id: mapping.skill.id,
           name: mapping.skill.name,
         };
       }),
-    };
+    } as JobEntity;
 
     delete result.mappingJobSkill;
 

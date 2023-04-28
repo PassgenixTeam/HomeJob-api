@@ -1,6 +1,6 @@
 import { AfterInsert, AfterUpdate, Column, Entity, OneToMany } from 'typeorm';
 import { SessionEntity } from '../../session/entities/session.entity';
-import { BaseEntity, ROLE } from '@app/common';
+import { BaseEntity, ROLE, StringTransformObject } from '@app/common';
 import { Expose, Transform, Type } from 'class-transformer';
 import { PaymentMethodEntity } from '../../payment-method/entities/payment-method.entity';
 import { TransactionEntity } from '../../transaction/entities/transaction.entity';
@@ -13,7 +13,10 @@ import { ExperienceEntity } from '../../experience/entities/experience.entity';
 import { MappingUserSkillEntity } from '../../mapping-user-skill/entities/mapping-user-skill.entity';
 import { MappingUserLanguageEntity } from '../../mapping-user-language/entities/mapping-user-language.entity';
 import { ContractEntity } from '../../contract/entities/contract.entity';
-import { HOURS_PER_WEEK } from 'src/modules/user/enums/user.enum';
+import {
+  HOURS_PER_WEEK,
+  PROFILE_VISIBILITY,
+} from 'src/modules/user/enums/user.enum';
 import { VideoOverview } from 'src/modules/user/dto/create-user.dto';
 import { isJSON } from 'class-validator';
 
@@ -89,14 +92,7 @@ export class UserEntity extends BaseEntity {
   overview: string;
 
   @Column({ type: 'varchar', length: 500, nullable: true })
-  @Transform(
-    ({ value }) => {
-      if (typeof value === 'string' && isJSON(value)) return JSON.parse(value);
-    },
-    {
-      toPlainOnly: true,
-    },
-  )
+  @StringTransformObject()
   videoOverview: VideoOverview;
 
   @Column({ type: 'enum', enum: HOURS_PER_WEEK, nullable: true })
@@ -108,8 +104,20 @@ export class UserEntity extends BaseEntity {
   @Column()
   loginBy: string;
 
-  // ----------------- Relations -----------------
+  @Column({ type: 'integer', default: 0 })
+  profileCompletion: number;
 
+  @Column({ type: 'boolean', default: false })
+  isPaymentVerified: boolean;
+
+  @Column({
+    type: 'enum',
+    enum: PROFILE_VISIBILITY,
+    default: PROFILE_VISIBILITY.PUBLIC,
+  })
+  profileVisibility: PROFILE_VISIBILITY;
+
+  // ----------------- Relations -----------------
   @OneToMany(() => PaymentMethodEntity, (paymentMethod) => paymentMethod.user)
   paymentMethods: PaymentMethodEntity[];
 

@@ -5,7 +5,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PaymentMethodEntity } from './entities/payment-method.entity';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../user/entities/user.entity';
-import { UserService } from '../user/user.service';
 import { RedisService } from '@app/core';
 
 @Injectable()
@@ -14,7 +13,8 @@ export class PaymentMethodService {
     @InjectRepository(PaymentMethodEntity)
     private readonly paymentMethodRepository: Repository<PaymentMethodEntity>,
     private readonly stripeService: StripeService,
-    private readonly userService: UserService,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
     private redisService: RedisService,
   ) {}
 
@@ -150,7 +150,7 @@ export class PaymentMethodService {
       state: user.state,
     });
 
-    await this.userService.update(user.id, {
+    await this.userRepository.update(user.id, {
       stripeCustomerId: stripeCustomer.id,
     });
 

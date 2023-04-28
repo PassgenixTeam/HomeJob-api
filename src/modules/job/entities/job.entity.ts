@@ -1,5 +1,5 @@
 import { Column, DeepPartial, Entity, OneToMany } from 'typeorm';
-import { BaseEntity } from '@app/common';
+import { BaseEntity, StringTransformObject } from '@app/common';
 import { MappingJobSkillEntity } from '../../mapping-job-skill/entities/mapping-job-skill.entity';
 import { Exclude } from 'class-transformer';
 import { SubSkillEntity } from '../../sub-skill/entities/sub-skill.entity';
@@ -42,6 +42,7 @@ export class JobEntity extends BaseEntity {
   hourlyFrom: number;
 
   @Column({ type: 'text' })
+  @StringTransformObject()
   attachments: string;
 
   @Column({ type: 'enum', enum: JOB_TYPE })

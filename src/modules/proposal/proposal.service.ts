@@ -4,7 +4,7 @@ import { UpdateProposalDto } from './dto/update-proposal.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProposalEntity } from './entities/proposal.entity';
 import { DataSource, Repository } from 'typeorm';
-import { plainToInstance } from 'class-transformer';
+import { instanceToPlain, plainToInstance } from 'class-transformer';
 import { FileQueue } from '../file/queues/file.queue';
 import { UserEntity } from '../user/entities/user.entity';
 import { RedisService } from '../../../libs/core/src';
@@ -15,6 +15,7 @@ import {
   removeKeyUndefined,
 } from '../../../libs/common/src';
 import { FileEntity } from '../file/entities/file.entity';
+import { JobEntity } from 'src/modules/job/entities/job.entity';
 
 @Injectable()
 export class ProposalService {
@@ -27,11 +28,24 @@ export class ProposalService {
     private readonly coinService: CoinService,
     @InjectRepository(FileEntity)
     private readonly fileRepository: Repository<FileEntity>,
+    @InjectRepository(JobEntity)
+    private readonly jobRepository: Repository<JobEntity>,
   ) {}
 
   private readonly logger = new Logger(ProposalService.name);
 
   async create(input: CreateProposalDto, user: UserEntity) {
+    const job = await this.jobRepository.findOne({
+      where: {
+        id: input.jobId,
+      },
+      select: ['id'],
+    });
+
+    if (!job) {
+      throw new Error('Job not found');
+    }
+
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
@@ -121,12 +135,18 @@ export class ProposalService {
       .getMany();
   }
 
-  findOne(id: string) {
-    return this.proposalRepository.findOne({
+  async findOne(id: string) {
+    const proposal = await this.proposalRepository.findOne({
       where: {
         id,
       },
     });
+
+    if (!proposal) {
+      throw new Error('Proposal not found');
+    }
+
+    return instanceToPlain(proposal);
   }
 
   async update(id: string, input: UpdateProposalDto, user: UserEntity) {

@@ -1,16 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ProposalService } from './proposal.service';
 import { ProposalController } from './proposal.controller';
-import { CoinService } from '../coin/coin.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProposalEntity } from './entities/proposal.entity';
 import { UserEntity } from '../user/entities/user.entity';
 import { CoinEntity } from '../coin/entities/coin.entity';
-import { FileQueue } from '../file/queues/file.queue';
-import { RedisService } from '../../../libs/core/src';
 import { FileModule } from '../file/file.module';
 import { CoinModule } from '../coin/coin.module';
 import { FileEntity } from '../file/entities/file.entity';
+import { JobEntity } from 'src/modules/job/entities/job.entity';
 
 @Module({
   imports: [
@@ -21,6 +19,7 @@ import { FileEntity } from '../file/entities/file.entity';
       UserEntity,
       CoinEntity,
       FileEntity,
+      JobEntity,
     ]),
   ],
   controllers: [ProposalController],

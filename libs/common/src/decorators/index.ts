@@ -8,3 +8,4 @@ export * from './pagination/pagination.decorator';
 export * from './pagination/pagination.model';
 export * from './transactional/transactional.decorator';
 export * from './response-transform/response-transform.decorator';
+export * from './string-transform/string-parse-object.decorator';

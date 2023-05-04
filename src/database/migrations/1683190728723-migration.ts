@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class migration1682670152978 implements MigrationInterface {
-  name = 'migration1682670152978';
+export class migration1683190728723 implements MigrationInterface {
+  name = 'migration1683190728723';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -24,6 +24,21 @@ export class migration1682670152978 implements MigrationInterface {
     );
     await queryRunner.query(
       `CREATE TABLE "mapping_job_skills" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "created_by" uuid, "updated_by" uuid, "deleted_at" TIMESTAMP, "deleted_by" uuid, "job_id" uuid NOT NULL, "skill_id" uuid NOT NULL, CONSTRAINT "PK_e79f7520e4139703c27c70b6b1e" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "public"."jobs_scope_type_enum" AS ENUM('large', 'medium', 'small')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "public"."jobs_experience_level_enum" AS ENUM('entry_level', 'intermediate', 'expert')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "public"."jobs_project_length_enum" AS ENUM('less_than_one_month', 'one_to_three_months', 'three_to_six_months', 'more_than_six_months')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "public"."jobs_job_type_enum" AS ENUM('hourly', 'fixed')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "public"."jobs_status_enum" AS ENUM('draft', 'pending', 'public')`,
     );
     await queryRunner.query(
       `CREATE TABLE "jobs" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "created_by" uuid, "updated_by" uuid, "deleted_at" TIMESTAMP, "deleted_by" uuid, "title" character varying(255) NOT NULL, "subtitle" character varying, "description" text NOT NULL, "scope_type" "public"."jobs_scope_type_enum" NOT NULL, "experience_level" "public"."jobs_experience_level_enum" NOT NULL, "project_length" "public"."jobs_project_length_enum" NOT NULL, "budget" double precision, "hourly_to" integer, "hourly_from" integer, "attachments" text NOT NULL, "job_type" "public"."jobs_job_type_enum" NOT NULL, "status" "public"."jobs_status_enum" NOT NULL, CONSTRAINT "PK_cf0a6c42b72fcc7f7c237def345" PRIMARY KEY ("id"))`,
@@ -50,10 +65,37 @@ export class migration1682670152978 implements MigrationInterface {
       `CREATE TABLE "mapping_user_languages" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "created_by" uuid, "updated_by" uuid, "deleted_at" TIMESTAMP, "deleted_by" uuid, "user_id" uuid NOT NULL, "language_id" uuid NOT NULL, "level" character varying NOT NULL, CONSTRAINT "PK_33ebf5e62c70e022287aacb8c84" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
+      `CREATE TYPE "public"."project_milestones_freelancer_confirm_status_enum" AS ENUM('pending', 'accepted', 'rejected')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "public"."project_milestones_status_enum" AS ENUM('active_and_funded', 'paid', 'pending')`,
+    );
+    await queryRunner.query(
       `CREATE TABLE "project_milestones" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "created_by" uuid, "updated_by" uuid, "deleted_at" TIMESTAMP, "deleted_by" uuid, "title" character varying(255) NOT NULL, "description" character varying(1000) NOT NULL, "amount" double precision NOT NULL, "due_date" TIMESTAMP WITH TIME ZONE NOT NULL, "contract_id" uuid NOT NULL, "is_paid" boolean NOT NULL DEFAULT false, "freelancer_confirm_status" "public"."project_milestones_freelancer_confirm_status_enum" NOT NULL DEFAULT 'pending', "status" "public"."project_milestones_status_enum" NOT NULL, CONSTRAINT "PK_0c561300a12c6ba3ad793dff4b8" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
+      `CREATE TYPE "public"."contracts_pay_type_enum" AS ENUM('hourly', 'fixed')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "public"."contracts_offer_status_enum" AS ENUM('pending', 'accepted', 'rejected')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "public"."contracts_pay_status_enum" AS ENUM('pending', 'paid')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "public"."contracts_status_enum" AS ENUM('pending', 'started', 'completed', 'cancelled')`,
+    );
+    await queryRunner.query(
       `CREATE TABLE "contracts" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "created_by" uuid, "updated_by" uuid, "deleted_at" TIMESTAMP, "deleted_by" uuid, "contract_id" uuid NOT NULL, "freelancer_id" uuid NOT NULL, "job_id" uuid NOT NULL, "pay_type" "public"."contracts_pay_type_enum" NOT NULL, "due_date" TIMESTAMP WITH TIME ZONE, "pay_fixed_price" double precision, "offer_status" "public"."contracts_offer_status_enum" NOT NULL, "deposit" double precision NOT NULL, "fee" double precision, "taxes" double precision, "total" double precision, "pay_status" "public"."contracts_pay_status_enum" NOT NULL, "status" "public"."contracts_status_enum" NOT NULL, CONSTRAINT "PK_2c7b8f3a7b1acdd49497d83d0fb" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "public"."users_role_enum" AS ENUM('freelancer', 'client', 'admin')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "public"."users_hours_per_week_enum" AS ENUM('More than 30h per week', 'Less than 30h per week', 'As need open to offer', 'None')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "public"."users_profile_visibility_enum" AS ENUM('Public', 'Private')`,
     );
     await queryRunner.query(
       `CREATE TABLE "users" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "created_by" uuid, "updated_by" uuid, "deleted_at" TIMESTAMP, "deleted_by" uuid, "password" character varying(255), "email" character varying(100) NOT NULL, "first_name" character varying(50) NOT NULL, "last_name" character varying(50) NOT NULL, "avatar_url" character varying(255) NOT NULL DEFAULT 'https://media.istockphoto.com/id/1016744004/vector/profile-placeholder-image-gray-silhouette-no-photo.jpg?s=612x612&w=0&k=20&c=mB6A9idhtEtsFXphs1WVwW_iPBt37S2kJp6VpPhFeoA=', "is_active" boolean NOT NULL DEFAULT false, "role" "public"."users_role_enum", "stripe_customer_id" character varying(50), "address" character varying(255), "city" character varying(20), "country" character varying(20), "line_1" character varying(50), "line_2" character varying(50), "phone" character varying(20), "state" character varying(50), "balance" double precision NOT NULL DEFAULT '0', "coin" double precision NOT NULL DEFAULT '0', "title" character varying(70), "hourly_rate" double precision NOT NULL DEFAULT '0', "overview" text, "video_overview" character varying(500), "hours_per_week" "public"."users_hours_per_week_enum", "contract_to_hire" boolean NOT NULL DEFAULT false, "login_by" character varying NOT NULL, "profile_completion" integer NOT NULL DEFAULT '0', "is_payment_verified" boolean NOT NULL DEFAULT false, "profile_visibility" "public"."users_profile_visibility_enum" NOT NULL DEFAULT 'Public', CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3" UNIQUE ("email"), CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id"))`,
@@ -66,6 +108,9 @@ export class migration1682670152978 implements MigrationInterface {
     );
     await queryRunner.query(
       `CREATE TABLE "categories" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "created_by" uuid, "updated_by" uuid, "deleted_at" TIMESTAMP, "deleted_by" uuid, "name" character varying NOT NULL, CONSTRAINT "PK_24dbc6126a28ff948da33e97d3b" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "public"."files_status_enum" AS ENUM('pending', 'using', 'deleted')`,
     );
     await queryRunner.query(
       `CREATE TABLE "files" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "created_by" uuid, "updated_by" uuid, "deleted_at" TIMESTAMP, "deleted_by" uuid, "type" character varying NOT NULL, "size" integer NOT NULL, "url" character varying NOT NULL, "key" character varying NOT NULL, "status" "public"."files_status_enum" NOT NULL, CONSTRAINT "PK_6c16b9093a142e0e7613b04a3d9" PRIMARY KEY ("id"))`,
@@ -200,12 +245,28 @@ export class migration1682670152978 implements MigrationInterface {
       `ALTER TABLE "transaction" DROP CONSTRAINT "FK_25b1234bd0af272d259fe5e38de"`,
     );
     await queryRunner.query(`DROP TABLE "files"`);
+    await queryRunner.query(`DROP TYPE "public"."files_status_enum"`);
     await queryRunner.query(`DROP TABLE "categories"`);
     await queryRunner.query(`DROP TABLE "sub_categories"`);
     await queryRunner.query(`DROP TABLE "sessions"`);
     await queryRunner.query(`DROP TABLE "users"`);
+    await queryRunner.query(
+      `DROP TYPE "public"."users_profile_visibility_enum"`,
+    );
+    await queryRunner.query(`DROP TYPE "public"."users_hours_per_week_enum"`);
+    await queryRunner.query(`DROP TYPE "public"."users_role_enum"`);
     await queryRunner.query(`DROP TABLE "contracts"`);
+    await queryRunner.query(`DROP TYPE "public"."contracts_status_enum"`);
+    await queryRunner.query(`DROP TYPE "public"."contracts_pay_status_enum"`);
+    await queryRunner.query(`DROP TYPE "public"."contracts_offer_status_enum"`);
+    await queryRunner.query(`DROP TYPE "public"."contracts_pay_type_enum"`);
     await queryRunner.query(`DROP TABLE "project_milestones"`);
+    await queryRunner.query(
+      `DROP TYPE "public"."project_milestones_status_enum"`,
+    );
+    await queryRunner.query(
+      `DROP TYPE "public"."project_milestones_freelancer_confirm_status_enum"`,
+    );
     await queryRunner.query(`DROP TABLE "mapping_user_languages"`);
     await queryRunner.query(`DROP TABLE "languages"`);
     await queryRunner.query(`DROP TABLE "experiences"`);
@@ -214,6 +275,11 @@ export class migration1682670152978 implements MigrationInterface {
     await queryRunner.query(`DROP TABLE "educations"`);
     await queryRunner.query(`DROP TABLE "proposals"`);
     await queryRunner.query(`DROP TABLE "jobs"`);
+    await queryRunner.query(`DROP TYPE "public"."jobs_status_enum"`);
+    await queryRunner.query(`DROP TYPE "public"."jobs_job_type_enum"`);
+    await queryRunner.query(`DROP TYPE "public"."jobs_project_length_enum"`);
+    await queryRunner.query(`DROP TYPE "public"."jobs_experience_level_enum"`);
+    await queryRunner.query(`DROP TYPE "public"."jobs_scope_type_enum"`);
     await queryRunner.query(`DROP TABLE "mapping_job_skills"`);
     await queryRunner.query(`DROP TABLE "sub_skills"`);
     await queryRunner.query(`DROP TABLE "mapping_user_skills"`);

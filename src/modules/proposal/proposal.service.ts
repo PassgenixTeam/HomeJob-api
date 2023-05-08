@@ -16,6 +16,7 @@ import {
 } from '../../../libs/common/src';
 import { FileEntity } from '../file/entities/file.entity';
 import { JobEntity } from 'src/modules/job/entities/job.entity';
+import { BiddingDto } from 'src/modules/proposal/dto/bidding.dto';
 
 @Injectable()
 export class ProposalService {
@@ -118,6 +119,67 @@ export class ProposalService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async bidding(id: string, input: BiddingDto, userId: string) {
+    const proposal = await this.proposalRepository.findOne({
+      where: {
+        id,
+      },
+    });
+
+    if (!proposal) {
+      throw new Error('Proposal not found');
+    }
+
+    if (proposal.createdBy !== userId) {
+      throw new Error('You are owner of this proposal');
+    }
+
+    const topProposal = await this.proposalRepository
+      .createQueryBuilder('proposal')
+      .select('MAX(proposal.bidding)')
+      .getRawMany();
+
+    const topBidding = topProposal ? topProposal[0]?.max : 0;
+
+    if (input.bidding <= topBidding) {
+      throw new Error('Your bidding must be higher than top bidding');
+    }
+
+    await this.proposalRepository.update(id, {
+      bidding: input.bidding,
+    });
+
+    return 'Bidding success';
+  }
+
+  async findAllByJob(jobId: string, userId: string) {
+    const job = await this.jobRepository.findOne({
+      where: {
+        id: jobId,
+      },
+      select: ['id'],
+    });
+
+    if (!job) {
+      throw new Error('Job not found');
+    }
+
+    return this.proposalRepository
+      .createQueryBuilder('proposal')
+      .leftJoinAndSelect('proposal.user', 'user')
+      .where('proposal.jobId = :jobId', { jobId })
+      .andWhere('proposal.createdBy = :userId', { userId })
+      .select([
+        'proposal',
+        'user.id',
+        'user.avatarUrl',
+        'user.firstName',
+        'user.lastName',
+      ])
+      .orderBy('proposal.bidding', 'DESC')
+      .getMany();
   }
 
   findAll(userId: string) {

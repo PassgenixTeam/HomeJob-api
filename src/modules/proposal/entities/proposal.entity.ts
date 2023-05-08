@@ -10,31 +10,34 @@ export class ProposalEntity extends BaseEntity {
   @Column({ type: 'uuid', name: 'job_id' })
   jobId: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 50, nullable: true })
   paidType: string;
 
-  @Column()
+  @Column({ type: 'integer', default: 0, nullable: true })
   amount: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 1000, nullable: true })
   @StringTransformObject()
   milestones: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 100, nullable: true })
   projectLong: string;
 
-  @Column()
+  @Column({ type: 'text', nullable: true })
   coverLetter: string;
 
-  @Column()
+  @Column({ type: 'text', nullable: true })
   @StringTransformObject()
   attachments: string;
 
-  @Column()
+  @Column({ type: 'integer', default: 0 })
   boostCoin: number;
 
-  @Column()
+  @Column({ type: 'timestamp', nullable: true })
   boostTime: Date;
+
+  @Column({ type: 'float', nullable: true })
+  bidding: number;
 
   @ManyToOne(() => JobEntity, (job) => job.proposals, {
     onDelete: 'CASCADE',

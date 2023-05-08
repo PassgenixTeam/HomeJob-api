@@ -1,5 +1,9 @@
 import { Column, DeepPartial, Entity, OneToMany } from 'typeorm';
-import { BaseEntity, StringTransformObject } from '@app/common';
+import {
+  BaseEntity,
+  ObjectTransformToString,
+  StringTransformObject,
+} from '@app/common';
 import { MappingJobSkillEntity } from '../../mapping-job-skill/entities/mapping-job-skill.entity';
 import { Exclude } from 'class-transformer';
 import { SubSkillEntity } from '../../sub-skill/entities/sub-skill.entity';
@@ -50,6 +54,11 @@ export class JobEntity extends BaseEntity {
 
   @Column({ type: 'enum', enum: JOB_STATUS })
   status: JOB_STATUS;
+
+  @Column({ type: 'varchar', length: 1000, nullable: true })
+  @StringTransformObject()
+  @ObjectTransformToString()
+  moreInfo: string;
 
   @OneToMany(
     () => MappingJobSkillEntity,

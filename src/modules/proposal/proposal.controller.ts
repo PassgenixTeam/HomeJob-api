@@ -13,6 +13,7 @@ import { UpdateProposalDto } from './dto/update-proposal.dto';
 import { Auth, AuthUser } from '../../../libs/core/src';
 import { UserEntity } from '../user/entities/user.entity';
 import { ApiTags } from '@nestjs/swagger';
+import { BiddingDto } from 'src/modules/proposal/dto/bidding.dto';
 
 @ApiTags('proposal')
 @Controller('proposal')
@@ -23,6 +24,22 @@ export class ProposalController {
   @Auth()
   create(@Body() input: CreateProposalDto, @AuthUser() user: UserEntity) {
     return this.proposalService.create(input, user);
+  }
+
+  @Post(':id/bidding')
+  @Auth()
+  bidding(
+    @Param('id') id: string,
+    @Body() input: BiddingDto,
+    @AuthUser('id') userId: string,
+  ) {
+    return this.proposalService.bidding(id, input, userId);
+  }
+
+  @Get('job/:id')
+  @Auth()
+  findAllByJob(@Param('id') jobId: string, @AuthUser('id') userId: string) {
+    return this.proposalService.findAllByJob(jobId, userId);
   }
 
   @Get()

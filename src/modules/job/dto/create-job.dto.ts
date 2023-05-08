@@ -2,7 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   EXPERIENCE_LEVEL,
   JOB_STATUS,
-  JOB_TYPE,
   PROJECT_LENGTH,
   SCOPE_TYPE,
 } from '../enums/job.enum';
@@ -61,4 +60,7 @@ export class CreateJobDto {
 
   @ApiProperty({ type: [String] })
   skills: string[];
+
+  @ApiProperty({ type: Object })
+  moreInfo: any;
 }

@@ -1,7 +1,13 @@
 import { EnumTransform } from '@app/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDateString, IsEmail, IsEnum, ValidateNested } from 'class-validator';
+import {
+  IsDateString,
+  IsEmail,
+  IsEnum,
+  IsNumber,
+  ValidateNested,
+} from 'class-validator';
 import { PAID_TYPE } from 'src/modules/proposal/enums/proposal.enum';
 
 export class MilestoneDto {
@@ -47,4 +53,8 @@ export class CreateProposalDto {
   @ApiProperty({ type: Date, format: 'date' })
   @IsDateString()
   boostTime: Date;
+
+  @ApiProperty({ type: Number })
+  @IsNumber()
+  bidding: number;
 }

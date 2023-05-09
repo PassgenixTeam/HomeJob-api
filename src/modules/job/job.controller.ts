@@ -7,12 +7,15 @@ import {
   Param,
   Delete,
   Put,
+  Query,
 } from '@nestjs/common';
 import { JobService } from './job.service';
 import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
 import { Auth, AuthUser } from '@app/core';
 import { ApiTags } from '@nestjs/swagger';
+import { Pagination, PaginationOptions } from '@app/common';
+import { QueryMyJobDto } from 'src/modules/job/dto/query-my-job.dto';
 
 @ApiTags('job')
 @Controller('job')
@@ -28,6 +31,16 @@ export class JobController {
   @Get()
   findAll() {
     return this.jobService.findAll();
+  }
+
+  @Get('my-jobs')
+  @Auth()
+  myJob(
+    @Pagination() pagination: PaginationOptions,
+    @Query() query: QueryMyJobDto,
+    @AuthUser('id') userId: string,
+  ) {
+    return this.jobService.myJob(pagination, query, userId);
   }
 
   @Get(':id')

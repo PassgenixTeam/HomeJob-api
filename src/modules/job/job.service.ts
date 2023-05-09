@@ -6,11 +6,18 @@ import { DataSource, Repository } from 'typeorm';
 import { JobEntity } from './entities/job.entity';
 import { MappingJobSkillService } from '../mapping-job-skill/mapping-job-skill.service';
 import { instanceToPlain, plainToInstance } from 'class-transformer';
-import { differenceMultiArray, isJson, removeKeyUndefined } from '@app/common';
+import {
+  PaginationOptions,
+  differenceMultiArray,
+  isJson,
+  removeKeyUndefined,
+} from '@app/common';
 import { FileEntity } from '../file/entities/file.entity';
 import { FileQueue } from '../file/queues/file.queue';
 import _ from 'lodash';
 import { JOB_STATUS, JOB_TYPE } from './enums/job.enum';
+import { QueryMyJobDto } from 'src/modules/job/dto/query-my-job.dto';
+import { ProposalEntity } from 'src/modules/proposal/entities/proposal.entity';
 @Injectable()
 export class JobService {
   constructor(
@@ -108,6 +115,67 @@ export class JobService {
     });
 
     return result;
+  }
+
+  async myJob(
+    pagination: PaginationOptions,
+    query: QueryMyJobDto,
+    userId: string,
+  ) {
+    const { search, visibility, status, type } = query;
+
+    const { limit, page } = pagination;
+
+    const queryJob = this.jobRepository
+      .createQueryBuilder('job')
+      .where('job.createdBy = :userId', { userId });
+
+    if (search) {
+      queryJob.where('job.title LIKE :search', {
+        title: `%${search}%`,
+      });
+    }
+
+    // if (visibility) {
+    //   queryJob.andWhere('job.visibility = :visibility', { visibility });
+    // }
+
+    if (status) {
+      queryJob.andWhere('job.status IN (:...status)', { status });
+    }
+
+    if (type) {
+      queryJob.andWhere('job.jobType = :type', { type });
+    }
+
+    const countDocument = queryJob.getCount();
+    const getJobs = queryJob
+      .skip((page - 1) * limit)
+      .take(limit)
+      .select([
+        'job.id as id',
+        'job.title as title',
+        'job.createdAt as "createdAt"',
+        'job.updatedAt as "updatedAt"',
+        'job.status as status',
+      ])
+      .addSelect((qb) => {
+        const subQuery = qb
+          .subQuery()
+          .select('COUNT(*)')
+          .from(ProposalEntity, 'proposal')
+          .where('proposal.jobId = job.id');
+        return subQuery;
+      }, 'proposalCount')
+      .getRawMany();
+
+    const [jobs, total] = await Promise.all([getJobs, countDocument]);
+
+    return {
+      data: jobs,
+      currentPage: page,
+      total,
+    };
   }
 
   async findOne(id: string) {

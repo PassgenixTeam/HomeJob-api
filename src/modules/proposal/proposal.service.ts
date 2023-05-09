@@ -178,9 +178,11 @@ export class ProposalService {
       throw new Error('Job not found');
     }
 
-    return this.proposalRepository
+    const proposals = await this.proposalRepository
       .createQueryBuilder('proposal')
       .leftJoinAndSelect('proposal.user', 'user')
+      .leftJoinAndSelect('user.mappingUserSkill', 'mappingUserSkill')
+      .leftJoinAndSelect('mappingUserSkill.skill', 'skill')
       .where('proposal.jobId = :jobId', { jobId })
       .select([
         'proposal',
@@ -188,9 +190,31 @@ export class ProposalService {
         'user.avatarUrl',
         'user.firstName',
         'user.lastName',
+        'user.title',
+        'mappingUserSkill',
+        'skill.id',
+        'skill.name',
       ])
       .orderBy('proposal.bidding', 'DESC')
       .getMany();
+
+    const result = proposals.map((proposal) => {
+      const skills = proposal.user.mappingUserSkill.map((mapping) => {
+        return mapping.skill;
+      });
+
+      delete proposal.user.mappingUserSkill;
+
+      return {
+        ...proposal,
+        user: {
+          ...proposal.user,
+          skills,
+        },
+      };
+    });
+
+    return result;
   }
 
   findAll(userId: string) {

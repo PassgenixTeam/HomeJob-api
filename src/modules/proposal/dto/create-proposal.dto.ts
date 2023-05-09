@@ -33,6 +33,9 @@ export class CreateProposalDto {
   @ApiProperty({ type: Number })
   amount: number;
 
+  @ApiProperty({ type: Number })
+  bid: number;
+
   @ApiProperty({ type: [MilestoneDto] })
   @ValidateNested({ each: true })
   @Type(() => MilestoneDto)
@@ -55,6 +58,5 @@ export class CreateProposalDto {
   boostTime: Date;
 
   @ApiProperty({ type: Number })
-  @IsNumber()
-  bidding: number;
+  bidding = 0;
 }

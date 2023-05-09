@@ -121,6 +121,18 @@ export class ProposalService {
     }
   }
 
+  async topBidding(jobId: string) {
+    const topProposal = await this.proposalRepository
+      .createQueryBuilder('proposal')
+      .select('MAX(proposal.bidding)')
+      .where('proposal.jobId = :jobId', { jobId })
+      .getRawMany();
+
+    const topBidding = topProposal ? topProposal[0]?.max : 0;
+
+    return topBidding;
+  }
+
   async bidding(id: string, input: BiddingDto, userId: string) {
     const proposal = await this.proposalRepository.findOne({
       where: {
@@ -170,7 +182,6 @@ export class ProposalService {
       .createQueryBuilder('proposal')
       .leftJoinAndSelect('proposal.user', 'user')
       .where('proposal.jobId = :jobId', { jobId })
-      .andWhere('proposal.createdBy = :userId', { userId })
       .select([
         'proposal',
         'user.id',

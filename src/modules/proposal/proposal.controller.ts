@@ -26,6 +26,12 @@ export class ProposalController {
     return this.proposalService.create(input, user);
   }
 
+  @Get('top-bidding/job/:id')
+  @Auth()
+  topBidding(@Param('id') jobId: string) {
+    return this.proposalService.topBidding(jobId);
+  }
+
   @Post(':id/bidding')
   @Auth()
   bidding(

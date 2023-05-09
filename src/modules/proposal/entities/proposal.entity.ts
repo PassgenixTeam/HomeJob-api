@@ -13,8 +13,11 @@ export class ProposalEntity extends BaseEntity {
   @Column({ type: 'varchar', length: 50, nullable: true })
   paidType: string;
 
-  @Column({ type: 'integer', default: 0, nullable: true })
+  @Column({ type: 'float', default: 0, nullable: true })
   amount: number;
+
+  @Column({ type: 'float', default: 0, nullable: true })
+  bid: number;
 
   @Column({ type: 'varchar', length: 1000, nullable: true })
   @StringTransformObject()

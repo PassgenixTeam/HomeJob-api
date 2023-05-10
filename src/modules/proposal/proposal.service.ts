@@ -11,6 +11,7 @@ import { RedisService } from '../../../libs/core/src';
 import { CoinEntity } from '../coin/entities/coin.entity';
 import { CoinService } from '../coin/coin.service';
 import {
+  ROLE,
   differenceMultiArray,
   removeKeyUndefined,
 } from '../../../libs/common/src';
@@ -232,12 +233,29 @@ export class ProposalService {
       .getMany();
   }
 
-  async findOne(id: string) {
-    const proposal = await this.proposalRepository.findOne({
-      where: {
-        id,
-      },
-    });
+  async findOne(id: string, role: ROLE) {
+    const queryProposal = this.proposalRepository
+      .createQueryBuilder('proposal')
+      .where('proposal.id = :id', { id });
+
+    if (role === ROLE.CLIENT) {
+      queryProposal
+        .leftJoinAndSelect('proposal.user', 'user')
+        .select([
+          'proposal',
+          'user.id',
+          'user.avatarUrl',
+          'user.firstName',
+          'user.lastName',
+          'user.title',
+          'user.country',
+          'user.city',
+        ]);
+    } else {
+      queryProposal.select(['proposal']);
+    }
+
+    const proposal = await queryProposal.getOne();
 
     if (!proposal) {
       throw new Error('Proposal not found');
@@ -345,7 +363,7 @@ export class ProposalService {
 
       await queryRunner.commitTransaction();
 
-      return this.findOne(proposal.id);
+      return this.findOne(proposal.id, user.role);
     } catch (error) {
       this.logger.error(error);
       await queryRunner.rollbackTransaction();

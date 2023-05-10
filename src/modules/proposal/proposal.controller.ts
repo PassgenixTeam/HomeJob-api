@@ -14,6 +14,7 @@ import { Auth, AuthUser } from '../../../libs/core/src';
 import { UserEntity } from '../user/entities/user.entity';
 import { ApiTags } from '@nestjs/swagger';
 import { BiddingDto } from 'src/modules/proposal/dto/bidding.dto';
+import { ROLE } from '@app/common';
 
 @ApiTags('proposal')
 @Controller('proposal')
@@ -56,8 +57,8 @@ export class ProposalController {
 
   @Get(':id')
   @Auth()
-  findOne(@Param('id') id: string) {
-    return this.proposalService.findOne(id);
+  findOne(@Param('id') id: string, @AuthUser('role') role: ROLE) {
+    return this.proposalService.findOne(id, role);
   }
 
   @Patch(':id')

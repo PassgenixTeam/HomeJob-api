@@ -1,3 +1,8 @@
+networks:
+  webapp:
+    name: webapp
+    external: true
+
 services:
   app:
     image: node:18-alpine
@@ -12,6 +17,9 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: 123456
       POSTGRES_DB: wfh
+    networks:
+      - webapp
+  
   postgres:
     image: postgres:15-alpine
     ports:
@@ -22,12 +30,17 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: 123456
       POSTGRES_DB: wfh
-  redis:
-    image: redis:7-alpine
-    ports:
-      - 6379:6379
-    volumes:
-      - redis:/var/lib/redis/data
+    networks:
+      - webapp
+      
+  # redis:
+  #   image: redis:7-alpine
+  #   ports:
+  #     - 6379:6379
+  #   volumes:
+  #     - redis:/var/lib/redis/data
+  #   networks:
+  #     - webapp
   # nginx:
   #   image: nginx:1.23.4-alpine
   #   ports:
@@ -38,5 +51,4 @@ services:
   #   depends_on:
   #     - app
 volumes:
-  postgres:
-  redis:
+  postgres: # redis:

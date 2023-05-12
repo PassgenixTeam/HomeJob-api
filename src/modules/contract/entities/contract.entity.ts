@@ -1,4 +1,8 @@
-import { BaseEntity } from '@app/common';
+import {
+  BaseEntity,
+  ObjectTransformToString,
+  StringTransformObject,
+} from '@app/common';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import {
   CONTRACT_STATUS,
@@ -49,6 +53,11 @@ export class ContractEntity extends BaseEntity {
 
   @Column({ type: 'enum', enum: CONTRACT_STATUS })
   status: CONTRACT_STATUS;
+
+  @Column({ type: 'text', nullable: true })
+  @StringTransformObject()
+  @ObjectTransformToString()
+  company: string;
 
   //  relations
 

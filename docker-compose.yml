@@ -6,7 +6,7 @@ networks:
 services:
   app:
     image: node:18-alpine
-    command: sh -c "yarn install && yarn build && yarn start"
+    command: sh -c "yarn install && yarn build && start:prod"
     ports:
       - 4000:4000
     working_dir: /app

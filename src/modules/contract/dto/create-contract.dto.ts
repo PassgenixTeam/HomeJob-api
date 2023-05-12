@@ -1,5 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsNotEmpty, ValidateNested } from 'class-validator';
+import {
+  IsDateString,
+  IsNotEmpty,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import { PAY_TYPE } from '../enums/contract.enum';
 import { Type } from 'class-transformer';
 
@@ -17,6 +22,31 @@ export class MilestoneDto {
   amount: number;
 }
 
+class CompanyDto {
+  @ApiProperty({ type: String })
+  @IsString()
+  country: string;
+
+  @ApiProperty({ type: String })
+  @IsString()
+  address1: string;
+
+  @ApiProperty({ type: String })
+  @IsString()
+  address2: string;
+
+  @ApiProperty({ type: String })
+  @IsString()
+  city: string;
+
+  @ApiProperty({ type: String })
+  @IsString()
+  state: string;
+
+  @ApiProperty({ type: String })
+  @IsString()
+  zip: string;
+}
 export class CreateContractDto {
   @ApiProperty({ type: String, format: 'uuid' })
   @IsNotEmpty()
@@ -44,4 +74,9 @@ export class CreateContractDto {
 
   @ApiProperty({ type: Number })
   deposit: number;
+
+  @ApiProperty({ type: CompanyDto })
+  @ValidateNested()
+  @Type(() => CompanyDto)
+  company: CompanyDto;
 }

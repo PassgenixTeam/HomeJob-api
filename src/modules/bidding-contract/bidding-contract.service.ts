@@ -9,6 +9,7 @@ import { JobEntity } from 'src/modules/job/entities/job.entity';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateBiddingContractDto } from './dto/create-bidding-contract.dto';
+import { ProposalEntity } from 'src/modules/proposal/entities/proposal.entity';
 
 @Injectable()
 export class BiddingContractService {
@@ -19,6 +20,8 @@ export class BiddingContractService {
     private jobRepository: Repository<JobEntity>,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    @InjectRepository(ProposalEntity)
+    private proposalRepository: Repository<ProposalEntity>,
   ) {}
   async create(
     createBiddingContractDto: CreateBiddingContractDto,
@@ -105,7 +108,17 @@ export class BiddingContractService {
       .where('biddingContract.id = :id', { id })
       .getOne();
 
-    return instanceToPlain(contract);
+    const proposal = await this.proposalRepository.findOne({
+      where: {
+        jobId: contract.jobId,
+        createdBy: contract.contractorId,
+      },
+    });
+
+    return {
+      ...instanceToPlain(contract),
+      proposal: proposal,
+    };
   }
 
   async acceptContract(

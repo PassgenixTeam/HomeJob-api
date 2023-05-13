@@ -14,11 +14,11 @@ export class CreateJobDto {
   title: string;
 
   @ApiProperty({ type: String, description: 'txHash' })
-  @IsString()
+  @IsOptional()
   txHash: string;
 
   @ApiProperty({ type: String, description: 'oraiJobId' })
-  @IsString()
+  @IsOptional()
   oraiJobId: string;
 
   // @ApiProperty({ type: String, description: 'Subtitle' })

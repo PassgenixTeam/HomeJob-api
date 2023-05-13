@@ -15,10 +15,12 @@ export class CreateBiddingContractDto {
   information: any;
 
   @ApiProperty({ type: String, description: 'txHash' })
+  @IsOptional()
   @IsString()
   txHash: string;
 
   @ApiProperty({ type: String, description: 'oraiJobId' })
+  @IsOptional()
   @IsString()
   oraiJobId: string;
 }

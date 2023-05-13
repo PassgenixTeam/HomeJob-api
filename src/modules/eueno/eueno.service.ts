@@ -17,49 +17,22 @@ export class EuenoService {
     const file = fs.readFileSync('public/a.jpg');
 
     const walletPublicKey = await this.getWalletPublicKey();
-    console.log(
-      {
-        projectKey: appConfig.eueno.EUENO_PRIVATE_KEY,
-        key: {
-          walletPublicKey: walletPublicKey,
-          fileEncryptionKey: this.eueno,
-        },
-      },
-      {
-        projectId: 129,
-        filename: 'a.jpg',
-        contentLength: 12313,
-        contentType: 'image/jpg',
-        method: 'ENCRYPT',
-        keepPath: false,
-      },
-    );
 
     try {
-      // const key = await CryptoJS..generateKey(
-      //   "aes", {
-      //     length: 256,
-      //   }
-      // );
-      // const readKey = await Crypto.exportKey('jwk', key);
-
-      // console.log(readKey);
-
       const data = await this.eueno.upload(
         file,
         {
           projectKey: appConfig.eueno.EUENO_PRIVATE_KEY,
-          // key: {
-          //   walletPublicKey: walletPublicKey,
-          //   fileEncryptionKey: '012u5pp13aPxBqfBdUvpueu9d-7DrjQ_HkLh1fsluFs',
-          // },
+          key: {
+            walletPublicKey: walletPublicKey,
+          },
         },
         {
           projectId: 129,
           filename: 'a.jpg',
           contentLength: 12313,
           contentType: 'image/jpg',
-          method: 'UNENCRYPTED',
+          method: 'ENCRYPT',
           keepPath: false,
         },
       );

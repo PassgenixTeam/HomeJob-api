@@ -160,6 +160,8 @@ export class JobService {
         'job.title as title',
         'job.createdAt as "createdAt"',
         'job.updatedAt as "updatedAt"',
+        'job.txHash as "txHash"',
+        'job.oraiJobId as "oraiJobId"',
         'job.status as status',
       ])
       .addSelect((qb) => {

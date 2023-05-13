@@ -13,4 +13,12 @@ export class CreateBiddingContractDto {
   @ApiProperty({ type: String })
   @IsOptional()
   information: any;
+
+  @ApiProperty({ type: String, description: 'txHash' })
+  @IsString()
+  txHash: string;
+
+  @ApiProperty({ type: String, description: 'oraiJobId' })
+  @IsString()
+  oraiJobId: string;
 }

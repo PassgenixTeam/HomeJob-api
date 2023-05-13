@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { CreateBiddingContractDto } from './dto/create-bidding-contract.dto';
-import { UpdateBiddingContractDto } from './dto/update-bidding-contract.dto';
-import { BiddingContractEntity } from 'src/modules/bidding-contract/entities/bidding-contract.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { instanceToPlain, plainToInstance } from 'class-transformer';
+import { AcceptBiddingContractDto } from 'src/modules/bidding-contract/dto/accept-contract.dto';
+import { AddSmartContract } from 'src/modules/bidding-contract/dto/add-smart-contract.dto';
+import { BiddingContractEntity } from 'src/modules/bidding-contract/entities/bidding-contract.entity';
+import { BIDDING_CONTRACT_STATUS } from 'src/modules/bidding-contract/enum/bidding-contract.enum';
 import { JobEntity } from 'src/modules/job/entities/job.entity';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
-import { BIDDING_CONTRACT_STATUS } from 'src/modules/bidding-contract/enum/bidding-contract.enum';
-import { AcceptBiddingContractDto } from 'src/modules/bidding-contract/dto/accept-contract.dto';
+import { Repository } from 'typeorm';
+import { CreateBiddingContractDto } from './dto/create-bidding-contract.dto';
 
 @Injectable()
 export class BiddingContractService {
@@ -59,6 +59,30 @@ export class BiddingContractService {
     return biddingContractInstance;
   }
 
+  async addSmartContract(
+    id: string,
+    addSmartContract: AddSmartContract,
+    userId: string,
+  ) {
+    const biddingContract = await this.biddingContractRepository.findOne({
+      where: {
+        id,
+      },
+      select: ['id'],
+    });
+
+    if (!biddingContract) {
+      throw new Error('Contract not found');
+    }
+
+    await this.biddingContractRepository.update(id, {
+      txHash: addSmartContract.txHash,
+      oraiJobId: addSmartContract.oraiJobId,
+    });
+
+    return biddingContract;
+  }
+
   async findAll(userId: string) {
     const [biddingContract, total] = await this.biddingContractRepository
       .createQueryBuilder('biddingContract')
@@ -102,7 +126,7 @@ export class BiddingContractService {
       throw new Error('You are not contractor of this contract');
     }
 
-    contract.information = acceptContractDto.information;
+    contract.approvedTxHash = acceptContractDto.approvedTxHash;
     contract.status = BIDDING_CONTRACT_STATUS.ACCEPTED;
 
     await this.biddingContractRepository.save(contract);

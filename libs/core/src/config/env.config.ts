@@ -55,6 +55,12 @@ const appConfig = {
     AWS_BUCKET_NAME: process.env.AWS_BUCKET_NAME || '',
     AWS_BUCKET_REGION: process.env.AWS_BUCKET_REGION || '',
   },
+  eueno: {
+    EUENO_ADDRESS: process.env.EUENO_ADDRESS || '',
+    EUENO_PRIVATE_KEY: process.env.EUENO_PRIVATE_KEY || '',
+    EUENO_PUBLIC_KEY: process.env.EUENO_PUBLIC_KEY || '',
+    EUENO_SECRET_KEY: process.env.EUENO_SECRET_KEY || '',
+  },
 };
 
 export { appConfig };

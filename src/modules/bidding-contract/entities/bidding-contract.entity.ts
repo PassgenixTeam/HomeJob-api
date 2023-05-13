@@ -38,6 +38,15 @@ export class BiddingContractEntity extends BaseEntity {
   @ObjectTransformToString()
   information: string;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  txHash: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  approvedTxHash: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  oraiJobId: string;
+
   @Column({ type: 'varchar', length: 50, nullable: true })
   status: string;
 }

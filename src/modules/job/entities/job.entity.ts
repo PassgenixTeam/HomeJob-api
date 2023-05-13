@@ -72,6 +72,12 @@ export class JobEntity extends BaseEntity {
   @ObjectTransformToString()
   moreInfo: string;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  txHash: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  oraiJobId: string;
+
   @OneToMany(
     () => MappingJobSkillEntity,
     (mappingJobSkill) => mappingJobSkill.job,

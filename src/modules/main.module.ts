@@ -24,6 +24,7 @@ import { MappingUserSkillModule } from './mapping-user-skill/mapping-user-skill.
 import { ContractModule } from './contract/contract.module';
 import { ProjectMilestoneModule } from './project-milestone/project-milestone.module';
 import { BiddingContractModule } from './bidding-contract/bidding-contract.module';
+import { EuenoModule } from './eueno/eueno.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { BiddingContractModule } from './bidding-contract/bidding-contract.modul
     ContractModule,
     ProjectMilestoneModule,
     BiddingContractModule,
+    EuenoModule,
   ],
   controllers: [],
   providers: [],

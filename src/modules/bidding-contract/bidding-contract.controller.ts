@@ -4,6 +4,7 @@ import { CreateBiddingContractDto } from './dto/create-bidding-contract.dto';
 import { Auth, AuthUser } from '@app/core';
 import { ApiTags } from '@nestjs/swagger';
 import { AcceptBiddingContractDto } from 'src/modules/bidding-contract/dto/accept-contract.dto';
+import { AddSmartContract } from 'src/modules/bidding-contract/dto/add-smart-contract.dto';
 
 @ApiTags('Bidding contract')
 @Controller('bidding-contract')
@@ -19,6 +20,20 @@ export class BiddingContractController {
     @AuthUser('id') userId: string,
   ) {
     return this.biddingContractService.create(createBiddingContractDto, userId);
+  }
+
+  @Patch('add-smart-contract/:id')
+  @Auth()
+  addSmartContract(
+    @Body() addSmartContract: AddSmartContract,
+    @Param('id') id: string,
+    @AuthUser('id') userId: string,
+  ) {
+    return this.biddingContractService.addSmartContract(
+      id,
+      addSmartContract,
+      userId,
+    );
   }
 
   @Patch('accept/:id')

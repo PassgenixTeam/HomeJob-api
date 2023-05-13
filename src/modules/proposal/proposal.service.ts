@@ -239,6 +239,7 @@ export class ProposalService {
   async findOne(id: string, role: ROLE) {
     const queryProposal = this.proposalRepository
       .createQueryBuilder('proposal')
+      .leftJoinAndSelect('proposal.job', 'job')
       .where('proposal.id = :id', { id });
 
     if (role === ROLE.CLIENT) {
@@ -253,6 +254,7 @@ export class ProposalService {
           'user.title',
           'user.country',
           'user.city',
+          'job',
         ]);
     } else {
       queryProposal.select(['proposal']);
@@ -263,6 +265,8 @@ export class ProposalService {
     if (!proposal) {
       throw new Error('Proposal not found');
     }
+
+    console.log(proposal);
 
     return instanceToPlain(proposal);
   }

@@ -5,12 +5,21 @@ import {
   PROJECT_LENGTH,
   SCOPE_TYPE,
 } from '../enums/job.enum';
-import { IsEnum, IsOptional } from 'class-validator';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { EnumTransform } from '../../../../libs/common/src';
 
 export class CreateJobDto {
   @ApiProperty({ type: String, description: 'Title' })
+  @IsString()
   title: string;
+
+  @ApiProperty({ type: String, description: 'txHash' })
+  @IsString()
+  txHash: string;
+
+  @ApiProperty({ type: String, description: 'oraiJobId' })
+  @IsString()
+  oraiJobId: string;
 
   // @ApiProperty({ type: String, description: 'Subtitle' })
   // subtitle: string;

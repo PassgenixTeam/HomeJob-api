@@ -6,6 +6,7 @@ import {
   IsBooleanString,
   IsEmail,
   IsEnum,
+  IsString,
   ValidateNested,
 } from 'class-validator';
 import { HOURS_PER_WEEK } from 'src/modules/user/enums/user.enum';
@@ -89,4 +90,8 @@ export class CreateUserDto {
   @ApiProperty({ type: Boolean, default: false })
   @IsBoolean()
   contractToHire: boolean;
+
+  @ApiProperty({ type: String })
+  @IsString()
+  oraiWallet: string;
 }

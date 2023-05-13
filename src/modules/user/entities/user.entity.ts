@@ -105,6 +105,9 @@ export class UserEntity extends BaseEntity {
   @Column()
   loginBy: string;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  oraiWallet: string;
+
   @Column({ type: 'integer', default: 0 })
   profileCompletion: number;
 

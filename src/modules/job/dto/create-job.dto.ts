@@ -5,7 +5,7 @@ import {
   PROJECT_LENGTH,
   SCOPE_TYPE,
 } from '../enums/job.enum';
-import { IsEnum } from 'class-validator';
+import { IsEnum, IsOptional } from 'class-validator';
 import { EnumTransform } from '../../../../libs/common/src';
 
 export class CreateJobDto {
@@ -19,6 +19,7 @@ export class CreateJobDto {
   description: string;
 
   @ApiProperty({ type: String, description: 'Scope Type', enum: SCOPE_TYPE })
+  @IsOptional()
   @IsEnum(SCOPE_TYPE)
   @EnumTransform(SCOPE_TYPE)
   scopeType: SCOPE_TYPE;
@@ -28,6 +29,7 @@ export class CreateJobDto {
     description: 'Scope Level',
     enum: EXPERIENCE_LEVEL,
   })
+  @IsOptional()
   @IsEnum(EXPERIENCE_LEVEL)
   @EnumTransform(EXPERIENCE_LEVEL)
   experienceLevel: EXPERIENCE_LEVEL;
@@ -37,6 +39,7 @@ export class CreateJobDto {
     description: 'Scope Time',
     enum: PROJECT_LENGTH,
   })
+  @IsOptional()
   @IsEnum(PROJECT_LENGTH)
   @EnumTransform(PROJECT_LENGTH)
   projectLength: PROJECT_LENGTH;

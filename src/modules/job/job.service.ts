@@ -39,16 +39,27 @@ export class JobService {
     await queryRunner.startTransaction();
 
     try {
-      const attachments = await this.fileRepository
-        .createQueryBuilder('file')
-        .where('file.url IN (:...urls)', { urls: input.attachments })
-        .getMany();
-
       if (!input.status) {
         input.status = JOB_STATUS.DRAFT;
       }
 
       const jobInstance = plainToInstance(JobEntity, input);
+
+      if (input.attachments) {
+        const attachments = await this.fileRepository
+          .createQueryBuilder('file')
+          .where('file.url IN (:...urls)', { urls: input.attachments })
+          .getMany();
+
+        jobInstance.attachments = JSON.stringify(
+          attachments.map((file) => {
+            return {
+              url: file.url,
+              size: file.size,
+            };
+          }),
+        );
+      }
 
       if (jobInstance.budget) {
         jobInstance.jobType = JOB_TYPE.FIXED;
@@ -63,14 +74,6 @@ export class JobService {
         plainToInstance(JobEntity, {
           ...jobInstance,
           createdBy: userId,
-          attachments: JSON.stringify(
-            attachments.map((file) => {
-              return {
-                url: file.url,
-                size: file.size,
-              };
-            }),
-          ),
         }),
       );
 
@@ -194,7 +197,7 @@ export class JobService {
 
     const result: JobEntity = {
       ...jobPlain,
-      skills: jobPlain.mappingJobSkill.map((mapping) => {
+      skills: jobPlain.mappingJobSkill?.map((mapping) => {
         return {
           id: mapping.skill.id,
           name: mapping.skill.name,

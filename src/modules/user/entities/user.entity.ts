@@ -19,6 +19,7 @@ import {
 } from 'src/modules/user/enums/user.enum';
 import { VideoOverview } from 'src/modules/user/dto/create-user.dto';
 import { isJSON } from 'class-validator';
+import { BiddingContractEntity } from 'src/modules/bidding-contract/entities/bidding-contract.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity extends BaseEntity {
@@ -170,6 +171,15 @@ export class UserEntity extends BaseEntity {
     onDelete: 'CASCADE',
   })
   contract: ContractEntity[];
+
+  @OneToMany(
+    () => BiddingContractEntity,
+    (biddingContract) => biddingContract.contractor,
+    {
+      onDelete: 'CASCADE',
+    },
+  )
+  biddingContracts: BiddingContractEntity[];
 
   // ----------------- Expose -----------------
 

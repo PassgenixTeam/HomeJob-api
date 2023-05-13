@@ -47,6 +47,24 @@ export class UserService {
     throw new Error(ERROR.CanNotCreateUser.toString());
   }
 
+  async userById(id: string) {
+    const userEntity = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.educations', 'educations')
+      .leftJoinAndSelect('user.experiences', 'experiences')
+      // .leftJoinAndSelect('user.skills', 'skills')
+      .leftJoinAndSelect(
+        'user.mappingUserLanguageEntity',
+        'mappingUserLanguageEntity',
+      )
+      .leftJoinAndSelect('user.projects', 'projects')
+      // .leftJoinAndSelect('user.socials', 'socials')
+      .where('user.id = :id', { id: id })
+      .getOne();
+
+    return instanceToPlain(userEntity);
+  }
+
   async update(id: string, input: UpdateUserDto) {
     const userInstance = plainToInstance(UserEntity, input);
 

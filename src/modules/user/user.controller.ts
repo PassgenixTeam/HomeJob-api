@@ -41,6 +41,12 @@ export class UserController {
     return this.userService.profile(user);
   }
 
+  @Auth()
+  @Get(':id')
+  userById(@Param('id') userId: string) {
+    return this.userService.userById(userId);
+  }
+
   @Patch('profile')
   @Auth()
   update(@Body() updateUserDto: UpdateUserDto, @AuthUser('id') userId: string) {

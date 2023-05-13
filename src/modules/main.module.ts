@@ -23,6 +23,7 @@ import { SubCategoryModule } from './sub-category/sub-category.module';
 import { MappingUserSkillModule } from './mapping-user-skill/mapping-user-skill.module';
 import { ContractModule } from './contract/contract.module';
 import { ProjectMilestoneModule } from './project-milestone/project-milestone.module';
+import { BiddingContractModule } from './bidding-contract/bidding-contract.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { ProjectMilestoneModule } from './project-milestone/project-milestone.mo
     MappingUserSkillModule,
     ContractModule,
     ProjectMilestoneModule,
+    BiddingContractModule,
   ],
   controllers: [],
   providers: [],

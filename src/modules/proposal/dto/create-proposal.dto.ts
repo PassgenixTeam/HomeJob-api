@@ -59,4 +59,16 @@ export class CreateProposalDto {
 
   @ApiProperty({ type: Number })
   bidding = 0;
+
+  @ApiProperty({ type: Number, default: 0 })
+  @IsNumber()
+  estimatedTime: number;
+
+  @ApiProperty({ type: Number, default: 0 })
+  @IsNumber()
+  estimatedLabor: number;
+
+  @ApiProperty({ type: Number, default: 0 })
+  @IsNumber()
+  estimateBudget: number;
 }

@@ -42,6 +42,15 @@ export class ProposalEntity extends BaseEntity {
   @Column({ type: 'float', nullable: true })
   bidding: number;
 
+  @Column({ type: 'integer', default: 0 })
+  estimatedTime: number;
+
+  @Column({ type: 'integer', default: 0 })
+  estimatedLabor: number;
+
+  @Column({ type: 'float', default: 0 })
+  estimateBudget: number;
+
   @ManyToOne(() => JobEntity, (job) => job.proposals, {
     onDelete: 'CASCADE',
   })

@@ -59,7 +59,10 @@ export class ProposalService {
       proposalInstance.createdBy = user.id;
       proposalInstance.milestones = JSON.stringify(input.milestones);
 
-      if (proposalInstance.attachments) {
+      if (
+        proposalInstance.attachments &&
+        proposalInstance.attachments.length > 0
+      ) {
         const attachments = await this.fileRepository
           .createQueryBuilder('file')
           .where('file.url IN (:...urls)', { urls: input.attachments })
@@ -125,7 +128,7 @@ export class ProposalService {
   async topBidding(jobId: string) {
     const topProposal = await this.proposalRepository
       .createQueryBuilder('proposal')
-      .select('MAX(proposal.bidding)')
+      .select('MAX(proposal.estimateBudget)')
       .where('proposal.jobId = :jobId', { jobId })
       .getRawMany();
 
@@ -151,7 +154,7 @@ export class ProposalService {
 
     const topProposal = await this.proposalRepository
       .createQueryBuilder('proposal')
-      .select('MAX(proposal.bidding)')
+      .select('MAX(proposal.estimateBudget)')
       .getRawMany();
 
     const topBidding = topProposal ? topProposal[0]?.max : 0;
@@ -196,7 +199,7 @@ export class ProposalService {
         'skill.id',
         'skill.name',
       ])
-      .orderBy('proposal.bidding', 'DESC')
+      .orderBy('proposal.estimateBudget', 'DESC')
       .getMany();
 
     const result = proposals.map((proposal) => {

@@ -5,22 +5,22 @@ import { PaymentMethodEntity } from '../../payment-method/entities/payment-metho
 
 @Entity({ name: 'transaction' })
 export class TransactionEntity extends BaseEntity {
-  @Column()
+  @Column({ nullable: true })
   type: string;
 
-  @Column()
+  @Column({ nullable: true })
   refId: string;
 
-  @Column()
+  @Column({ nullable: true })
   amount: number;
 
-  @Column()
+  @Column({ nullable: true })
   description: string;
 
-  @Column()
+  @Column({ nullable: true })
   balance: number;
 
-  @Column({ name: 'payment_method_id', type: 'uuid' })
+  @Column({ name: 'payment_method_id', type: 'uuid', nullable: true })
   paymentMethodId: string;
 
   @ManyToOne(() => UserEntity, (user) => user.transactions)

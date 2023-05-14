@@ -71,4 +71,7 @@ export class CreateProposalDto {
   @ApiProperty({ type: Number, default: 0 })
   @IsNumber()
   estimateBudget: number;
+
+  @ApiProperty({ type: String })
+  oraiProject: string;
 }

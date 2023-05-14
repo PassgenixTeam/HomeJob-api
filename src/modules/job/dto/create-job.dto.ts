@@ -75,4 +75,7 @@ export class CreateJobDto {
 
   @ApiProperty({ type: Object })
   moreInfo: any;
+
+  @ApiProperty({ type: String })
+  oraiProject: string;
 }

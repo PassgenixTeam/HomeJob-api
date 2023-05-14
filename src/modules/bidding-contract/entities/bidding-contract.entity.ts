@@ -47,6 +47,9 @@ export class BiddingContractEntity extends BaseEntity {
   @Column({ type: 'varchar', length: 255, nullable: true })
   oraiJobId: string;
 
+  @Column({ type: 'varchar', length: 1000, nullable: true })
+  oraiFile: string;
+
   @Column({ type: 'varchar', length: 50, nullable: true })
   status: string;
 }

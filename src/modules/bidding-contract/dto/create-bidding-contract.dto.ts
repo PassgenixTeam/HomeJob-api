@@ -23,4 +23,9 @@ export class CreateBiddingContractDto {
   @IsOptional()
   @IsString()
   oraiJobId: string;
+
+  @ApiProperty({ type: String, description: 'oraiJobId' })
+  @IsOptional()
+  @IsString()
+  oraiFile: string;
 }

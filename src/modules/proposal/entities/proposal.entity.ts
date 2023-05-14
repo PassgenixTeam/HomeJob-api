@@ -62,4 +62,7 @@ export class ProposalEntity extends BaseEntity {
   })
   @JoinColumn({ name: 'created_by' })
   user: UserEntity;
+
+  @Column({ type: 'varchar', length: 1000, nullable: true })
+  oraiProject: string;
 }

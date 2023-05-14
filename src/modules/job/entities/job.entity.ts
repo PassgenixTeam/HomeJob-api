@@ -78,6 +78,9 @@ export class JobEntity extends BaseEntity {
   @Column({ type: 'varchar', length: 255, nullable: true })
   oraiJobId: string;
 
+  @Column({ type: 'varchar', length: 1000, nullable: true })
+  oraiProject: string;
+
   @OneToMany(
     () => MappingJobSkillEntity,
     (mappingJobSkill) => mappingJobSkill.job,
